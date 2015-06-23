@@ -27,7 +27,7 @@ func (this *myMusicModel) InsertMusic(musicInfo *element.MusicInfo) (int, error)
 }
 
 func (this *myMusicModel) FetchMusicInfo(musicInfo *element.MusicInfo) error {
-	rows, err := DatabaseInstance().DB.Query("select path from baidumusic where musicid = ?", musicInfo.MusicId)
+	rows, err := DatabaseInstance().DB.Query("select path from localmusic where musicid = ?", musicInfo.MusicId)
 	if err != nil {
 		return err
 	}
@@ -36,6 +36,10 @@ func (this *myMusicModel) FetchMusicInfo(musicInfo *element.MusicInfo) error {
 		if err != nil {
 			return err
 		}
+		musicInfo.MusicPath = musicInfo.MusicUUID + "/music.mp3"
+		musicInfo.LyricPath = musicInfo.MusicUUID + "/lyric.lrc"
+		musicInfo.BigCoverImagePath = musicInfo.MusicUUID + "/big_cover.jpg"
+		musicInfo.SmallCoverImagePath = musicInfo.MusicUUID + "/small_cover.jpg"
 		return nil
 	} else {
 		return errors.New("No Data")

@@ -148,6 +148,8 @@ func (this *musicManager) DownloadMusic(musicId int, callback DownloadProgressCa
 		DownloadManagerInstance().AddDownloadInfoIntoQueue(downloadInfo)
 		<-downloadInfo.CompleteSignal
 	case element.LocalMusicSourceType:
+		musicInfo.MusicPath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.MusicPath)
+		fmt.Println(musicInfo.MusicPath)
 		content, err := this.readLocalFile(musicInfo.MusicPath)
 		var stop bool
 		callback(content, err, &stop)
@@ -180,6 +182,7 @@ func (this *musicManager) DownloadLyric(musicId int, callback DownloadProgressCa
 		<-downloadInfo.CompleteSignal
 		cache.CacheManagerInstance().DeleteCacheFile(downloadInfo.DownloadPath)
 	case element.LocalMusicSourceType:
+		musicInfo.LyricPath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.LyricPath)
 		content, err := this.readLocalFile(musicInfo.LyricPath)
 		var stop bool
 		callback(content, err, &stop)
@@ -212,6 +215,7 @@ func (this *musicManager) DownloadBigCoverImage(musicId int, callback DownloadPr
 		<-downloadInfo.CompleteSignal
 		cache.CacheManagerInstance().DeleteCacheFile(downloadInfo.DownloadPath)
 	case element.LocalMusicSourceType:
+		musicInfo.BigCoverImagePath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.BigCoverImagePath)
 		content, err := this.readLocalFile(musicInfo.BigCoverImagePath)
 		var stop bool
 		callback(content, err, &stop)
@@ -244,6 +248,7 @@ func (this *musicManager) DownloadSmallCoverImage(musicId int, callback Download
 		<-downloadInfo.CompleteSignal
 		cache.CacheManagerInstance().DeleteCacheFile(downloadInfo.DownloadPath)
 	case element.LocalMusicSourceType:
+		musicInfo.SmallCoverImagePath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.SmallCoverImagePath)
 		content, err := this.readLocalFile(musicInfo.SmallCoverImagePath)
 		var stop bool
 		callback(content, err, &stop)
