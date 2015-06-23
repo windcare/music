@@ -1,7 +1,8 @@
 package controller
 
 import (
-	// "code.google.com/p/go.net/websocket"
+	"config"
+	"fmt"
 	"net/http"
 )
 
@@ -28,9 +29,11 @@ func (this *ServiceManager) InitService() {
 	http.HandleFunc("/message", this.messageController.MessageAction)
 	http.HandleFunc("/music", this.musicController.MusicAction)
 	http.HandleFunc("/account", this.accountController.AccountAction)
-
 	http.HandleFunc("/longconnect", this.pushMessageController.AccountAction)
-	http.Handle("/js/", http.FileServer(http.Dir("/Users/sjjwind/Desktop/Project/Music/Server/src/view")))
+
+	webPath := config.ConfigManagerInstance().ReadWebResourcePath()
+	jsPath := webPath + "/src/view"
+	http.Handle("/js/", http.FileServer(http.Dir(jsPath)))
 }
 
 func (this *ServiceManager) UninitService() {
@@ -38,5 +41,6 @@ func (this *ServiceManager) UninitService() {
 }
 
 func (this *ServiceManager) StartService() {
-	http.ListenAndServe(":34321", nil)
+	port := config.ConfigManagerInstance().ReadPort()
+	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }

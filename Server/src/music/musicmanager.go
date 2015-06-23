@@ -2,6 +2,7 @@ package music
 
 import (
 	"cache"
+	"config"
 	"crypto/md5"
 	"crypto/rand"
 	"element"
@@ -125,9 +126,13 @@ func (this *musicManager) DownloadMusic(musicId int, callback DownloadProgressCa
 			fmt.Println("Download Success!")
 			// 下载完成，将文件拷贝到本地目录，然后删除缓存目录
 			// musicInfo.MusicPath = musicInfo.DownloadPath
-			localPath := fmt.Sprintf("./resource/%s/", musicInfo.MusicUUID)
-			cache.CacheManagerInstance().MoveCacheFile(downloadInfo.DownloadPath, localPath)
-			this.WriteMusicInfoIntoDB(musicInfo)
+			localPath := fmt.Sprintf("%s/resource/%s/", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.MusicUUID)
+			err := cache.CacheManagerInstance().MoveCacheFile(downloadInfo.DownloadPath, localPath)
+			if err != nil {
+				fmt.Println("Save Error: ", err)
+			} else {
+				this.WriteMusicInfoIntoDB(musicInfo)
+			}
 		}
 		downloadInfo.Failed = func(musicInfo *element.MusicInfo, err error) {
 			cache.CacheManagerInstance().DeleteCacheFile(downloadInfo.DownloadPath)

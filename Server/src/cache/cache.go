@@ -42,8 +42,8 @@ func (this *cacheManager) GenerateCacheFile() string {
 	return path
 }
 
-func (this *cacheManager) MoveCacheFile(srcPath, dstPath string) {
-	os.Rename(srcPath, dstPath)
+func (this *cacheManager) MoveCacheFile(srcPath, dstPath string) error {
+	return os.Rename(srcPath, dstPath)
 }
 
 func (this *cacheManager) DeleteCacheFile(path string) {
