@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.md5.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<title>测试服务器</title>
+</head>
+<body>
+	<div class="container">
+		<button type="button" class="getmusic" onclick="getMusicList()">拉取列表</button>
+		<span>MusicId: <input type="text" class="musicid" value="" placeholder=""></span>
+		<button type="button" onclick="downloadMusic()">下载音乐</button>
+		<button type="button" onclick="downloadBigCover()">下载音乐封面-大图</button>
+		<button type="button" onclick="downloadSmallCover()">下载音乐封面-小图</button>
+		<button type="button" class="downloadLyric" onclick="downloadLyric()">下载歌词</button>
+		<div class="playMusic">
+			<audio class="playAudio" autobuffer autoloop loop controls></audio>
+			<button type="button" class="playButton" style="margin-left: 20px;" onclick="playMusic()">播放音乐</button>
+		</div>
+		<div class="user">
+			<span>UserName: <input type="text" class="username"></span>
+			<span>Password: <input type="password" class="password"></span>
+			<button type="button" onclick="login()">登录</button>
+			<button type="button" onclick="register()">注册</button>
+			<button type="button" onclick="device()">所有设备情况</button>
+			<div class="usermusic">
+				<button type="button" onclick="fetchRandomList()">获取随机列表</button>
+				<button type="button" style="margin-left: 10px;" onclick="fetchLoveList()">获取喜欢听的歌</button>
+				<button type="button" style="margin-left: 10px;" onclick="fetchHateList()">获取不喜欢的歌</button>
+				<button type="button" style="margin-left: 10px;" onclick="fetchListendList()">获取听过的歌</button>
+			</div>
+			<div class="usercontrol">
+				<span>MusicId: <input type="text" class="controlmusicid"></span>
+				<button type="button" style="margin-left: 10px;" onclick="loveMusic()">喜欢</button>
+				<button type="button" style="margin-left: 10px;" onclick="hateMusic()">不喜欢</button>
+				<button type="button" style="margin-left: 10px;" onclick="listenMusic()">听过</button>
+			</div>
+		</div>
+		<div class="other">
+			<div class="search">
+				<span>KeyWord: <input type="text" class="searchkey"></span>
+				<button type="button" onclick="search()">搜索</button>
+			</div>
+		</div>
+	</div>
+	<style type="text/css">
+		.container
+		{
+			margin-left: 100px;
+			margin-top: 50px;
+		}
+		.musicid
+		{
+			margin-top: 30px;
+		}
+		.getmusic
+		{
+			display: block;
+		}
+		.playMusic 
+		{
+			margin-top: 20px;
+		}
+		.user
+		{
+			margin-top: 50px;
+			padding-top: 30px;
+			width: 700px;
+		}
+		.usermusic
+		{
+			margin-top: 30px;
+		}
+		.usercontrol
+		{
+			margin-top: 20px;
+		}
+		.other
+		{
+			margin-top: 30px;
+		}
+	</style>
+	<script type="text/javascript" charset="utf-8">
+		function getMusicList() {
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/message" ,
+				data: "action=getMusicList",
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+		function downloadMusic() {
+			var musicId = $(".musicid").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/message" ,
+				data: "action=downloadMusic&musicId=" + musicId,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+		function downloadBigCover() {
+			var musicId = $(".musicid").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/message" ,
+				data: "action=downloadBigCover&musicId=" + musicId,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+		function downloadSmallCover() {
+			var musicId = $(".musicid").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/message" ,
+				data: "action=downloadSmallCover&musicId=" + musicId,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function downloadLyric() {
+			var musicId = $(".musicid").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/message" ,
+				data: "action=downloadLyric&musicId=" + musicId,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function playMusic() {
+			var musicId = $(".musicid").val();
+			$(".playAudio").remove();
+			$(".playButton").before('<audio class="playAudio" src="http://localhost:34321/message?action=downloadMusic&musicId=' + musicId + '" autobuffer autoloop loop controls></audio>');
+			$(".playAudio")[0].play();
+		}
+
+		function register() {
+			var username = $(".username").val();
+			var password = $(".password").val();
+			var sex = "男";
+			var age = 15;
+			var sendData = {
+				"action": "register",
+				"param": {
+					"username": $(".username").val(),
+					"password": $(".password").val(),
+					"sex": "男",
+					"age": 15
+				}
+			};
+			$.ajax({
+				type: 'POST',
+				url: 'http://localhost:34321/account',
+				data: JSON.stringify(sendData),
+				contentType: "application/json; charset=utf-8",
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function login() {
+			var username = $(".username").val();
+			var password = $(".password").val();
+			var code = $.md5($.md5(password) + username);
+			var sendData = {
+				"action": "login",
+				"param": {
+					"username": $(".username").val(),
+					"password": code
+				}
+			};
+			$.ajax({
+				type: 'POST',
+				url: 'http://localhost:34321/account',
+				data: JSON.stringify(sendData),
+				contentType: "application/json; charset=utf-8",
+				// dataType: "json",
+				success: function(data) {
+					$.cookie('token', data.token);
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function fetchRandomList() {
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/music" ,
+				data: "action=fetchRandomList",
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function fetchLoveList() {
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/music" ,
+				data: "action=fetchLoveList",
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function loveMusic() {
+			var musicId = $(".controlmusicid").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/music" ,
+				data: "action=loveMusic&degree=1&musicId=" + musicId,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+		function hateMusic() {
+			var musicId = $(".controlmusicid").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/music" ,
+				data: "action=loveMusic&degree=0&musicId=" + musicId,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function listenMusic() {
+			var musicId = $(".controlmusicid").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/music" ,
+				data: "action=listenMusic&musicId=" + musicId,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+
+		function search() {
+			var key = $(".searchkey").val();
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:34321/music" ,
+				data: "action=searchMusic&key=" + key,
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+			});
+		}
+	</script>
+</body>
+</html>
