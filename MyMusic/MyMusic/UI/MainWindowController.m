@@ -10,10 +10,16 @@
 #import "MMWindow.h"
 #import "MMView.h"
 #import "MMSlider.h"
+#import "MMTableView.h"
+#import "MMTableCellView.h"
+#import "MusicManager.h"
+#import "MusicFile.h"
+#import "MyPlayer.h"
+#import "MMRotatedImage.h"
 
 static const CGFloat kWindowOriginYMargin = 30.0f;
 
-static const CGFloat kWindowOriginHeight = 200.0f;
+static const CGFloat kWindowOriginHeight = 120.0f;
 static const CGFloat kWindowFullHeight = 500.0f;
 
 @interface MainWindowController () <MMSliderDelegate>
@@ -21,8 +27,11 @@ static const CGFloat kWindowFullHeight = 500.0f;
 @property (nonatomic, weak) IBOutlet NSView *view1;
 @property (nonatomic, weak) IBOutlet NSView *view2;
 @property (nonatomic, weak) IBOutlet MMSlider *slider;
+@property (nonatomic, weak) IBOutlet MMTableView *tableView;
+@property (nonatomic, weak) IBOutlet MMRotatedImage *coverImage;
 
 @property (nonatomic, assign) BOOL isFullScreen;
+@property (nonatomic, strong) NSArray *musicList;
 
 @end
 
@@ -39,6 +48,14 @@ static const CGFloat kWindowFullHeight = 500.0f;
     [self.window setFrame:originRect display:YES];
     [self.slider setDelegate:self];
     self.slider.duration = 400.0;
+    [self.tableView setTarget:self];
+    [self.tableView setDoubleAction:@selector(didDoubleClickFolderRow:)];
+    [[MusicManager sharedManager] fetchRandomListWithChannel:0 complete:^(int errorCode, NSArray *musicList) {
+        if (errorCode == 0) {
+            self.musicList = musicList;
+            [self.tableView reloadData];
+        }
+    }]; 
 }
 
 + (MainWindowController *)sharedMainWindowController{
@@ -52,6 +69,7 @@ static const CGFloat kWindowFullHeight = 500.0f;
 }
 
 - (IBAction)test:(id)sender {
+    [(MMView *)self.view1 setBackgroundImage:[NSImage imageNamed:@"background"]];
     [self pushView:self.view1 animated:YES];
 }
 
@@ -108,4 +126,40 @@ static const CGFloat kWindowFullHeight = 500.0f;
     }
 }
 
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+    return self.musicList.count;
+}
+
+- (void)tableView:(NSTableView *)tableView
+  willDisplayCell:(id)cell
+   forTableColumn:(NSTableColumn *)tableColumn
+              row:(NSInteger)row {
+    [cell setBackgroundColor:[NSColor whiteColor]];
+}
+
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    MMTableCellView *cellView = [tableView makeViewWithIdentifier:[tableColumn identifier] owner:self];    
+    [cellView setMusicInfo:self.musicList[row]];
+    return cellView;
+}
+
+- (IBAction)didDoubleClickFolderRow:(id)sender {
+    NSUInteger row = self.tableView.clickedRow;
+    MusicInfo *selectMusic = self.musicList[row];
+    MusicFile *file = [[MusicFile alloc] init];
+    file.musicName = selectMusic.musicName;
+    [[MusicManager sharedManager] downloadMusic:selectMusic.musicId complete:^(int errorCode, NSString *path) {
+        if (errorCode == -1) {
+            file.audioFileURL = [NSURL URLWithString:path];
+            MyPlayer *player = [[MyPlayer alloc] init];
+            [player setMusicList:@[file]];
+            [player play];
+        }
+    }];
+    [[MusicManager sharedManager] downloadCoverImage:selectMusic.musicId complete:^(int errorCode, NSString *path) {
+        self.coverImage.songCover = [[NSImage alloc] initWithContentsOfFile:path];
+        [self.coverImage startRotating];
+    }];
+}
 @end

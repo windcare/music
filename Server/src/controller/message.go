@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-type downloadFunc func(musicId int, progress music.DownloadProgressCallback)
+type downloadFunc func(musicId int, information music.FetchInformationCallback, progress music.DownloadProgressCallback)
 
 func getMd5String(s string) string {
 	h := md5.New()
@@ -27,7 +27,9 @@ func NewMessageController() *MessageController {
 func (this *MessageController) writeStream(musicId int, function downloadFunc, w http.ResponseWriter) {
 	w.Header().Set("Accept", "*/*")
 	w.Header().Set("Connection", "keep-alive")
-	function(musicId, func(content []byte, err error, stop *bool) {
+	function(musicId, func(contentLength int) {
+		w.Header().Set("Content-Length", strconv.Itoa(contentLength))
+	}, func(content []byte, err error, stop *bool) {
 		if err != nil {
 			fmt.Println("download error: ", err)
 		} else {
@@ -42,9 +44,6 @@ func (this *MessageController) writeStream(musicId int, function downloadFunc, w
 func (this *MessageController) handleGetRequest(w http.ResponseWriter, r *http.Request) {
 	action := r.Form.Get("action")
 	switch action {
-	case "getMusicList":
-		music.MusicManagerInstance().FetchMusicList()
-		NormalResponse(w, OK)
 	case "downloadMusic":
 		musicId, err := strconv.Atoi(r.Form.Get("musicId"))
 		if err != nil {

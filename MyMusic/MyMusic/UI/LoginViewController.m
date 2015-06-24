@@ -31,12 +31,15 @@
 }
 
 - (IBAction)login:(id)sender {
+    [[MusicManager sharedManager] loginByUserName:@"hello1" password:@"hello1" completion:^(int errorCode) {
+        NSLog(@"errorCode");
+    }];
 //    [[MainWindowController sharedMainWindowController] showWindow:nil];
 //    [[MainWindowController sharedMainWindowController] showWindowAndMakeItKeyWindow];
 }
 
 - (IBAction)fetchRandomList:(id)sender {
-    [[MusicManager sharedManager] fetchRandomListWithCompletion:^(int errorCode, NSArray *musicList) {
+    [[MusicManager sharedManager] fetchRandomListWithChannel:0 complete:^(int errorCode, NSArray *musicList) {
         NSLog(@"%@", musicList);
     }];
 }

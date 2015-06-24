@@ -107,7 +107,7 @@ func (this *musicManager) createUUID() string {
 	return str[0:8] + "-" + str[8:12] + "-" + str[12:16] + "-" + str[16:20] + "-" + str[20:32]
 }
 
-func (this *musicManager) DownloadMusic(musicId int, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadMusic(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -134,6 +134,9 @@ func (this *musicManager) DownloadMusic(musicId int, callback DownloadProgressCa
 				this.WriteMusicInfoIntoDB(musicInfo)
 			}
 		}
+		downloadInfo.Information = func(contentLength int) {
+			informationCallback(contentLength)
+		}
 		downloadInfo.Failed = func(musicInfo *element.MusicInfo, err error) {
 			cache.CacheManagerInstance().DeleteCacheFile(downloadInfo.DownloadPath)
 		}
@@ -151,12 +154,13 @@ func (this *musicManager) DownloadMusic(musicId int, callback DownloadProgressCa
 		musicInfo.MusicPath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.MusicPath)
 		fmt.Println(musicInfo.MusicPath)
 		content, err := this.readLocalFile(musicInfo.MusicPath)
+		informationCallback(len(content))
 		var stop bool
 		callback(content, err, &stop)
 	}
 }
 
-func (this *musicManager) DownloadLyric(musicId int, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadLyric(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -177,6 +181,9 @@ func (this *musicManager) DownloadLyric(musicId int, callback DownloadProgressCa
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
 		}
+		downloadInfo.Information = func(contentLength int) {
+			informationCallback(contentLength)
+		}
 		downloadInfo.CompleteSignal = make(chan bool)
 		DownloadManagerInstance().AddDownloadInfoIntoQueue(downloadInfo)
 		<-downloadInfo.CompleteSignal
@@ -184,12 +191,13 @@ func (this *musicManager) DownloadLyric(musicId int, callback DownloadProgressCa
 	case element.LocalMusicSourceType:
 		musicInfo.LyricPath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.LyricPath)
 		content, err := this.readLocalFile(musicInfo.LyricPath)
+		informationCallback(len(content))
 		var stop bool
 		callback(content, err, &stop)
 	}
 }
 
-func (this *musicManager) DownloadBigCoverImage(musicId int, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadBigCoverImage(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -210,6 +218,9 @@ func (this *musicManager) DownloadBigCoverImage(musicId int, callback DownloadPr
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
 		}
+		downloadInfo.Information = func(contentLength int) {
+			informationCallback(contentLength)
+		}
 		downloadInfo.CompleteSignal = make(chan bool)
 		DownloadManagerInstance().AddDownloadInfoIntoQueue(downloadInfo)
 		<-downloadInfo.CompleteSignal
@@ -217,12 +228,13 @@ func (this *musicManager) DownloadBigCoverImage(musicId int, callback DownloadPr
 	case element.LocalMusicSourceType:
 		musicInfo.BigCoverImagePath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.BigCoverImagePath)
 		content, err := this.readLocalFile(musicInfo.BigCoverImagePath)
+		informationCallback(len(content))
 		var stop bool
 		callback(content, err, &stop)
 	}
 }
 
-func (this *musicManager) DownloadSmallCoverImage(musicId int, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadSmallCoverImage(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -243,6 +255,9 @@ func (this *musicManager) DownloadSmallCoverImage(musicId int, callback Download
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
 		}
+		downloadInfo.Information = func(contentLength int) {
+			informationCallback(contentLength)
+		}
 		downloadInfo.CompleteSignal = make(chan bool)
 		DownloadManagerInstance().AddDownloadInfoIntoQueue(downloadInfo)
 		<-downloadInfo.CompleteSignal
@@ -250,6 +265,7 @@ func (this *musicManager) DownloadSmallCoverImage(musicId int, callback Download
 	case element.LocalMusicSourceType:
 		musicInfo.SmallCoverImagePath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.SmallCoverImagePath)
 		content, err := this.readLocalFile(musicInfo.SmallCoverImagePath)
+		informationCallback(len(content))
 		var stop bool
 		callback(content, err, &stop)
 	}

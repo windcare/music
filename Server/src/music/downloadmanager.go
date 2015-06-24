@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -16,6 +17,7 @@ import (
 type CompleteCallback func(musicInfo *element.MusicInfo)
 type FailedCallback func(musicInfo *element.MusicInfo, err error)
 type DownloadProgressCallback func(content []byte, err error, stop *bool)
+type FetchInformationCallback func(fileSize int)
 
 const (
 	DownloadTypeMusic = iota
@@ -30,6 +32,7 @@ type DownloadElement struct {
 	DownloadPath    string
 	Progress        DownloadProgressCallback
 	CompleteSignal  chan bool
+	Information     FetchInformationCallback
 	Complete        CompleteCallback
 	Failed          FailedCallback
 }
@@ -88,7 +91,7 @@ func (this *downloadManager) readNetworkFile(url string, filePath string) error 
 	return nil
 }
 
-func (this *downloadManager) readNetworkFileUsingCallback(url string, downloadPath string, callback DownloadProgressCallback) error {
+func (this *downloadManager) readNetworkFileUsingCallback(url string, downloadPath string, fetchCallback FetchInformationCallback, callback DownloadProgressCallback) error {
 	out, err := os.Create(downloadPath)
 	if err != nil {
 		fmt.Println("download create error: ", err)
@@ -100,6 +103,10 @@ func (this *downloadManager) readNetworkFileUsingCallback(url string, downloadPa
 	if err != nil {
 		callback(nil, err, &stopDownload)
 		return err
+	}
+	contentLength, err := strconv.Atoi(resp.Header.Get("Content-Length"))
+	if err == nil {
+		fetchCallback(contentLength)
 	}
 	reader := bufio.NewReader(resp.Body)
 	content := make([]byte, HttpReadSize)
@@ -182,7 +189,9 @@ func (this *downloadManager) StartDownload() {
 					// download Music
 					musicPath := downloadInfo.DownloadPath + "/music.mp3"
 					fmt.Println(downloadMusic.MusicPath)
-					if err := this.readNetworkFileUsingCallback(downloadMusic.MusicPath, musicPath, func(content []byte, err error, stop *bool) {
+					if err := this.readNetworkFileUsingCallback(downloadMusic.MusicPath, musicPath, func(contentLength int) {
+						downloadInfo.Information(contentLength)
+					}, func(content []byte, err error, stop *bool) {
 						downloadInfo.Progress(content, err, stop)
 					}); err != nil {
 						downloadInfo.CompleteSignal <- true
@@ -226,7 +235,9 @@ func (this *downloadManager) StartDownload() {
 				case DownloadTypeSingle:
 					downloadURL := downloadInfo.DownloadContent.(string)
 					fmt.Println("StartDownload URL: ", downloadURL)
-					if err := this.readNetworkFileUsingCallback(downloadURL, downloadInfo.DownloadPath, func(content []byte, err error, stop *bool) {
+					if err := this.readNetworkFileUsingCallback(downloadURL, downloadInfo.DownloadPath, func(contentLength int) {
+						downloadInfo.Information(contentLength)
+					}, func(content []byte, err error, stop *bool) {
 						downloadInfo.Progress(content, err, stop)
 					}); err != nil {
 						var stop bool

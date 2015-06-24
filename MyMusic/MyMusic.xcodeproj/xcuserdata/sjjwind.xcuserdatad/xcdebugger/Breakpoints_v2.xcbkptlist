@@ -73,13 +73,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MyMusic/UI/MainWindowController.m"
-            timestampString = "456740792.921078"
+            filePath = "MyMusic/Core/MusicManager.m"
+            timestampString = "456822892.232649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "-togglerFullScreen:"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
+            landmarkName = "-fetchRandomListWithChannel:complete:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MyMusic/Core/MusicManager.m"
+            timestampString = "456823548.643069"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "185"
+            endingLineNumber = "185"
+            landmarkName = "-downloadNetworkFile:targetPath:complete:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

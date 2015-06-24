@@ -89,6 +89,7 @@ func (this *tokenManager) CheckTokenIsValidWithoutLock(userid int, currentToken 
 
 func (this *tokenManager) AddToken(userid int) Token {
 	this.lock.Lock()
+	defer this.lock.Unlock()
 	if _, ok := this.tokenList[userid]; ok {
 		// token已经存在
 		existToken := this.tokenList[userid]
@@ -97,7 +98,6 @@ func (this *tokenManager) AddToken(userid int) Token {
 		}
 	}
 	token := this.createToken()
-	defer this.lock.Unlock()
 	this.tokenList[userid] = &Token{UserId: userid, CreateTime: time.Now().Unix(), Value: token}
 	return *this.tokenList[userid]
 }

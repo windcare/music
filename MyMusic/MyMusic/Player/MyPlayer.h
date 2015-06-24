@@ -10,7 +10,7 @@
 
 @interface MyPlayer : NSObject
 
-- (void)setPlayList:(NSArray *)musicList;
+- (void)setMusicList:(NSArray *)musicList;
 - (void)play;
 - (void)pause;
 - (void)stop;

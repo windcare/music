@@ -112,6 +112,7 @@ func (this *MusicController) writeMusicInfo(musicList []*element.MusicInfo, w ht
 	if err != nil {
 		fmt.Println("fetch Random List Marshal Error: ", err)
 	}
+	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, string(body))
 }
 
@@ -137,6 +138,7 @@ func (this *MusicController) fetchLoveList(userId int, w http.ResponseWriter, r 
 		if err != nil {
 			fmt.Println("fetch Random List Marshal Error: ", err)
 		}
+		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, string(body))
 	}
 }
@@ -163,6 +165,7 @@ func (this *MusicController) fetchListenedList(userId int, w http.ResponseWriter
 		if err != nil {
 			fmt.Println("fetch Random List Marshal Error: ", err)
 		}
+		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, string(body))
 	}
 }
@@ -217,6 +220,7 @@ func (this *MusicController) searchMusic(w http.ResponseWriter, r *http.Request)
 		if err != nil {
 			fmt.Println("fetch Random List Marshal Error: ", err)
 		}
+		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, string(body))
 	}
 }
