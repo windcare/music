@@ -82,4 +82,37 @@
     
 }
 
+- (void)pushSmallView:(NSView *)pushView fromView:(NSView *)fromView type:(PushType)type {
+//    pushView.wantsLayer = YES;
+//    pushView.layer.masksToBounds = YES;
+    switch (type) {
+        case PushTypeFromLeft:
+        {
+            pushView.wantsLayer = YES;
+            pushView.layer.masksToBounds = YES;
+            NSPoint beginPoint = { fromView.frame.origin.x - fromView.frame.size.width, fromView.frame.origin.y };
+            NSPoint endPoint = { fromView.frame.origin.x, fromView.frame.origin.y };
+            NSRect viewRect = pushView.frame;
+            viewRect.origin = beginPoint;
+            viewRect.size.height = fromView.frame.size.height;
+            pushView.frame = viewRect;
+            pushView.layer.frame = pushView.frame;
+            [fromView addSubview:pushView];
+            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position"]; 
+            animation.fromValue = [NSValue valueWithPoint:beginPoint];
+            animation.toValue = [NSValue valueWithPoint:endPoint];
+            animation.removedOnCompletion = NO; 
+            animation.duration = 1.2;
+            animation.fillMode = kCAFillModeForwards;
+            animation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut]; 
+            [pushView.layer addAnimation:animation forKey:nil];
+            break;
+        }
+        case PushTypeFromRight:
+            break;
+        default:
+            break;
+    }
+}
+
 @end

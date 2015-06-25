@@ -22,10 +22,12 @@ func DatabaseInstance() *Database {
 
 func (this *Database) Open() error {
 	var err error = nil
-	this.DB, err = sql.Open("mysql", ConnectString)
-	if err != nil {
-		fmt.Printf("connect err", err)
-		return err
+	if this.ref == 0 {
+		this.DB, err = sql.Open("mysql", ConnectString)
+		if err != nil {
+			fmt.Printf("connect err", err)
+			return err
+		}
 	}
 	this.ref++
 	return nil

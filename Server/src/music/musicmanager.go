@@ -45,8 +45,8 @@ func (this *musicManager) SetPlayer(playerType int) {
 	}
 }
 
-func (this *musicManager) FetchMusicList() []*element.MusicInfo {
-	musicList := this.palyer.FetchMusicList(0)
+func (this *musicManager) FetchMusicList(channel int) []*element.MusicInfo {
+	musicList := this.palyer.FetchMusicList(channel)
 	this.SaveMusicList(musicList)
 	return musicList
 }

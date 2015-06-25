@@ -15,8 +15,39 @@ import (
 )
 
 const (
-	BaiduMusicChannelHot     = iota // 热歌
-	BaiduMusicChannelClassic        //经典老歌
+	BaiduMusicChannelPersonal    = iota // 私人频道
+	BaiduMusicChannleLove               // 我喜欢
+	BaiduMusicChannelHot                // 热歌
+	BaiduMusicChannelKTV                // KTV 歌曲
+	BaiduMusicChannelFamous             // 成名曲
+	BaiduMusicChannelRandom             // 随便听听
+	BaiduMusicChannelNetwork            // 网络歌曲
+	BaiduMusicChannelTV                 // 影视歌曲
+	BaiduMusicChannelChinaVioce         // 中国好声音
+	BaiduMusicChannelClassic            //经典老歌
+	BaiduMusicChannel70Age              // 70后歌曲
+	BaiduMusicChannel80Age              // 80后歌曲
+	BaiduMusicChannel90Age              // 90后歌曲
+	BaiduMusicChannelChildren           // 儿童歌曲
+	BaiduMusicChannelNew                // 新歌
+	BaiduMusicChannelPopular            // 流行
+	BaiduMusicChannelLightMusic         //轻音乐
+	BaiduMusicChannelFresh              // 小清新
+	BaiduMusicChannelChineseWind        //中国风
+	BaiduMusicChannelRock               // 摇滚
+	BaiduMusicChannelVideo              // 电影
+	BaiduMusicChannelFolk               // 民谣
+	BaiduMusicChannelChinese            // 华语
+	BaiduMusicChannelEurope             // 欧美
+	BaiduMusicChannelJanpan             // 小鬼子
+	BaiduMusicChannelKorea              // 韩语
+	BaiduMusicChannelCantonese          // 粤语
+	BaiduMusicChannelHappy              // 欢快
+	BaiduMusicChannelSlow               // 舒缓
+	BaiduMusicChannelSad                // 伤感
+	BaiduMusicChannelReleax             // 轻松
+	BaiduMusicChannelAlone              // 寂寞
+
 )
 
 const baiduPlayListURLBase = "http://fm.baidu.com/dev/api/?tn=playlist&id=%s&hascode=&_=%d"
@@ -35,8 +66,68 @@ func getMusicType(musicType int) string {
 	switch musicType {
 	case BaiduMusicChannelHot:
 		return "public_tuijian_rege"
+	case BaiduMusicChannelKTV:
+		return "public_tuijian_ktv"
+	case BaiduMusicChannelFamous:
+		return "public_tuijian_chengmingqu"
+	case BaiduMusicChannelRandom:
+		return "public_tuijian_suibiantingting"
+	case BaiduMusicChannelNetwork:
+		return "public_tuijian_wangluo"
+	case BaiduMusicChannelTV:
+		return "public_tuijian_yingshi"
+	case BaiduMusicChannelChinaVioce:
+		return "public_tuijian_zhongguohaoshengyin"
+
 	case BaiduMusicChannelClassic:
 		return "public_shiguang_jingdianlaoge"
+	case BaiduMusicChannel70Age:
+		return "public_shiguang_70hou"
+	case BaiduMusicChannel80Age:
+		return "public_shiguang_80hou"
+	case BaiduMusicChannel90Age:
+		return "public_shiguang_90hou"
+	case BaiduMusicChannelChildren:
+		return "public_shiguang_erge"
+	case BaiduMusicChannelNew:
+		return "public_shiguang_xinge"
+
+	case BaiduMusicChannelPopular:
+		return "public_fengge_liuxing"
+	case BaiduMusicChannelLightMusic:
+		return "public_fengge_qingyinyue"
+	case BaiduMusicChannelFresh:
+		return "public_fengge_xiaoqingxin"
+	case BaiduMusicChannelChineseWind:
+		return "public_fengge_zhongguofeng"
+	case BaiduMusicChannelRock:
+		return "public_fengge_yaogun"
+	case BaiduMusicChannelVideo:
+		return "public_fengge_dianyingyuansheng"
+	case BaiduMusicChannelFolk:
+		return "public_fengge_minyao"
+
+	case BaiduMusicChannelChinese:
+		return "public_yuzhong_huayu"
+	case BaiduMusicChannelEurope:
+		return "public_yuzhong_oumei"
+	case BaiduMusicChannelJanpan:
+		return "public_yuzhong_riyu"
+	case BaiduMusicChannelKorea:
+		return "public_yuzhong_hanyu"
+	case BaiduMusicChannelCantonese:
+		return "public_yuzhong_yueyu"
+
+	case BaiduMusicChannelHappy:
+		return "public_xinqing_huankuai"
+	case BaiduMusicChannelSlow:
+		return "public_xinqing_shuhuan"
+	case BaiduMusicChannelSad:
+		return "public_xinqing_shanggan"
+	case BaiduMusicChannelReleax:
+		return "public_xinqing_qingsongjiari"
+	case BaiduMusicChannelAlone:
+		return "public_xinqing_jimo"
 	default:
 		return ""
 	}

@@ -8,6 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef enum : NSInteger {
+    PushTypeFromLeft = 0x01,
+    PushTypeFromRight = 0x02,
+}PushType;
+
 @interface MMWindowController : NSWindowController
 
 - (void)setRootView:(NSView *)rootView;
@@ -17,5 +22,7 @@
 - (void)popViewAnimated:(BOOL)animated;
 
 - (void)popToRootViewAnimated:(BOOL)animated;
+
+- (void)pushSmallView:(NSView *)pushView fromView:(NSView *)fromView type:(PushType)type;
 
 @end

@@ -5,7 +5,7 @@ import (
 )
 
 type Player interface {
-	FetchMusicList(musicType int) []*element.MusicInfo
+	FetchMusicList(channel int) []*element.MusicInfo
 	FetchMusicById(musicId int) *element.MusicInfo
 	SearchMusic(keyword string) []*element.MusicInfo
 }

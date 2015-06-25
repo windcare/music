@@ -16,6 +16,7 @@
 #import "MusicFile.h"
 #import "MyPlayer.h"
 #import "MMRotatedImage.h"
+#import "PlayManager.h"
 
 static const CGFloat kWindowOriginYMargin = 30.0f;
 
@@ -29,9 +30,17 @@ static const CGFloat kWindowFullHeight = 500.0f;
 @property (nonatomic, weak) IBOutlet MMSlider *slider;
 @property (nonatomic, weak) IBOutlet MMTableView *tableView;
 @property (nonatomic, weak) IBOutlet MMRotatedImage *coverImage;
+@property (nonatomic, weak) IBOutlet NSTextField *musicName;
+@property (nonatomic, weak) IBOutlet NSTextField *timeField;
+@property (nonatomic, weak) IBOutlet NSView *playListView;
+@property (nonatomic, weak) IBOutlet NSView *leftPanelView;
+@property (nonatomic, weak) IBOutlet NSButton *playBtn;
 
 @property (nonatomic, assign) BOOL isFullScreen;
 @property (nonatomic, strong) NSArray *musicList;
+@property (nonatomic, assign) NSTimeInterval duration;
+@property (nonatomic, assign) BOOL isPlaying;
+@property (nonatomic, assign) BOOL isPaused;
 
 @end
 
@@ -50,12 +59,8 @@ static const CGFloat kWindowFullHeight = 500.0f;
     self.slider.duration = 400.0;
     [self.tableView setTarget:self];
     [self.tableView setDoubleAction:@selector(didDoubleClickFolderRow:)];
-    [[MusicManager sharedManager] fetchRandomListWithChannel:0 complete:^(int errorCode, NSArray *musicList) {
-        if (errorCode == 0) {
-            self.musicList = musicList;
-            [self.tableView reloadData];
-        }
-    }]; 
+    [PlayManager sharedManager].controller = self;
+    [self fetchMusic:MMMusicChannelChildren];
 }
 
 + (MainWindowController *)sharedMainWindowController{
@@ -147,19 +152,94 @@ static const CGFloat kWindowFullHeight = 500.0f;
 - (IBAction)didDoubleClickFolderRow:(id)sender {
     NSUInteger row = self.tableView.clickedRow;
     MusicInfo *selectMusic = self.musicList[row];
-    MusicFile *file = [[MusicFile alloc] init];
-    file.musicName = selectMusic.musicName;
-    [[MusicManager sharedManager] downloadMusic:selectMusic.musicId complete:^(int errorCode, NSString *path) {
-        if (errorCode == -1) {
-            file.audioFileURL = [NSURL URLWithString:path];
-            MyPlayer *player = [[MyPlayer alloc] init];
-            [player setMusicList:@[file]];
-            [player play];
+    [[PlayManager sharedManager] playMusic:selectMusic];
+}
+
+- (IBAction)changeList:(id)sender {
+//    [self pushSmallView:self.leftPanelView fromView:self.playListView type:PushTypeFromLeft];
+}
+
+- (IBAction)play:(id)sender {
+    if (self.isPaused) {
+        self.isPaused = NO;
+        [self.playBtn setImage:[NSImage imageNamed:@"player_btn_play_normal"]];
+        [[PlayManager sharedManager] play];
+    }
+    else {
+        self.isPaused = YES;
+        [self.playBtn setImage:[NSImage imageNamed:@"player_btn_pause_normal"]];
+        [[PlayManager sharedManager] pause];
+    }
+}
+
+- (IBAction)playNext:(id)sender {
+    [[PlayManager sharedManager] playNext];
+}
+
+- (IBAction)playPrevious:(id)sender {
+    [[PlayManager sharedManager] playPrevious];
+}
+
+- (void)setMusicName:(NSString *)musicName authorName:(NSString *)artist {
+    NSString *showName = nil;
+    if (artist != nil ) {
+        showName = [NSString stringWithFormat:@"%@ - %@", musicName, artist];
+    }
+    else {
+        showName = musicName;
+    }
+    
+    self.musicName.stringValue = showName;
+}
+
+- (void)setDuration:(NSTimeInterval)duration {
+    _duration = duration;
+}
+
+- (void)setProgress:(NSTimeInterval)progress {
+    self.slider.currentTime = progress;
+    NSString *showTime = [NSString stringWithFormat:@"%ld:%ld/%ld:%ld", (NSInteger)progress / 60,  (NSInteger)progress % 60, (NSInteger)self.duration / 60, (NSInteger)self.duration % 60];
+    self.timeField.stringValue = showTime;
+}
+
+- (void)setCover:(NSImage *)coverImage {
+    [self.coverImage setSongCover:coverImage];
+}
+
+- (void)startAnimation {
+    [self.coverImage startRotating];
+}
+
+- (void)stopAnimation {
+    [self.coverImage stopRotating];
+}
+
+- (void)setVolumn:(CGFloat)volumn {
+    
+}
+
+- (void)fetchMusic:(MMMusicChannel)channel {
+    [[MusicManager sharedManager] fetchRandomListWithChannel:channel complete:^(int errorCode, NSArray *musicList) {
+        if (errorCode == 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.musicList = musicList;
+                [[PlayManager sharedManager] setPlayMusicList:musicList];
+                [self.tableView reloadData];
+            });
         }
     }];
-    [[MusicManager sharedManager] downloadCoverImage:selectMusic.musicId complete:^(int errorCode, NSString *path) {
-        self.coverImage.songCover = [[NSImage alloc] initWithContentsOfFile:path];
-        [self.coverImage startRotating];
-    }];
 }
+
+- (IBAction)hotMusic:(id)sender {
+    [self fetchMusic:MMMusicChannelHot];
+}
+
+- (IBAction)classicMusic:(id)sender {
+    [self fetchMusic:MMMusicChannelClassic];
+}
+
+- (IBAction)chineseVoice:(id)sender {
+    [self fetchMusic:MMMusicChannelChinaVioce];
+}
+
 @end

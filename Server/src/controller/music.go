@@ -90,9 +90,25 @@ func (this *MusicController) fetchMusicWithProxy(url string, w http.ResponseWrit
 }
 
 func (this *MusicController) fetchRandomList(w http.ResponseWriter, r *http.Request) {
-	musicList := music.MusicManagerInstance().FetchMusicList()
-	if len(musicList) != 0 {
-		this.writeMusicInfo(musicList, w)
+	channel, err := strconv.Atoi(r.Form.Get("channel"))
+	if err != nil {
+		NormalResponse(w, InvalidParam)
+	} else {
+		switch channel {
+		case 0:
+			// 私人频道
+			music.MusicManagerInstance().SetPlayer(music.MyPlayer)
+			musicList := music.MusicManagerInstance().FetchMusicList(channel)
+			if len(musicList) != 0 {
+				this.writeMusicInfo(musicList, w)
+			}
+		default:
+			music.MusicManagerInstance().SetPlayer(music.BaiduPlayer)
+			musicList := music.MusicManagerInstance().FetchMusicList(channel)
+			if len(musicList) != 0 {
+				this.writeMusicInfo(musicList, w)
+			}
+		}
 	}
 }
 
@@ -244,7 +260,6 @@ func (this *MusicController) MusicAction(w http.ResponseWriter, r *http.Request)
 			fmt.Println(action)
 			switch action {
 			case "fetchRandomList":
-				music.MusicManagerInstance().SetPlayer(music.BaiduPlayer)
 				this.fetchRandomList(w, r)
 			case "fetchLoveList":
 				this.fetchLoveList(userId, w, r)

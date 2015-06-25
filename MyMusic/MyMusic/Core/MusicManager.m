@@ -101,7 +101,8 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
 
 - (void)fetchRandomListWithChannel:(MMMusicChannel)channel 
                           complete:(void (^)(int, NSArray *))completion {
-    NSURL *fetchRadomListURL = [NSURL URLWithString:[kAPIURLBase stringByAppendingString:@"?action=fetchRandomList&channel=1"]];
+    NSString *url = [NSString stringWithFormat:@"?action=fetchRandomList&channel=%ld", channel];
+    NSURL *fetchRadomListURL = [NSURL URLWithString:[kAPIURLBase stringByAppendingString:url]];
     
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:fetchRadomListURL];
     [self sendRequest:mutableRequest success:^(NSDictionary *response) {

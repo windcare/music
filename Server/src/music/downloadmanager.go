@@ -24,6 +24,7 @@ const (
 	DownloadTypeSingle
 )
 
+const MaxDownloadQueue = 3 // 最多可以支持3个携程同时下载
 const HttpReadSize = 4 * 1024 * 1024
 
 type DownloadElement struct {
@@ -38,10 +39,12 @@ type DownloadElement struct {
 }
 
 type downloadManager struct {
-	downloadList []*DownloadElement
-	downloading  bool
-	mutex        *sync.Mutex
-	ref          int
+	downloadList  []*DownloadElement
+	downloading   bool
+	mutex         *sync.Mutex
+	downloadMutex *sync.Mutex
+	ref           int
+	downloadRef   int
 }
 
 var manager *downloadManager = nil
@@ -50,6 +53,7 @@ func DownloadManagerInstance() *downloadManager {
 	if manager == nil {
 		manager = &downloadManager{}
 		manager.mutex = &sync.Mutex{}
+		manager.downloadMutex = &sync.Mutex{}
 		manager.ref = 0
 		manager.StartDownload()
 	}
@@ -164,6 +168,12 @@ func (this *downloadManager) IsExistInDownloadList(downloadType int, downloadCon
 	return false
 }
 
+func (this *downloadManager) releaseDownloadRef() {
+	this.downloadMutex.Lock()
+	defer this.downloadMutex.Unlock()
+	this.downloadRef--
+}
+
 func (this *downloadManager) StartDownload() {
 	if this.downloading == true {
 		return
@@ -181,71 +191,86 @@ func (this *downloadManager) StartDownload() {
 				this.downloadList = this.downloadList[1:len(this.downloadList)]
 				this.ref--
 				this.mutex.Unlock()
-				switch downloadInfo.DownloadType {
-				case DownloadTypeMusic:
-					downloadMusic := downloadInfo.DownloadContent.(*element.MusicInfo)
-					fmt.Println("StartDownload Music: ", downloadMusic.MusicName)
-					os.Mkdir(downloadInfo.DownloadPath, os.ModeType|os.ModePerm)
-					// download Music
-					musicPath := downloadInfo.DownloadPath + "/music.mp3"
-					fmt.Println(downloadMusic.MusicPath)
-					if err := this.readNetworkFileUsingCallback(downloadMusic.MusicPath, musicPath, func(contentLength int) {
-						downloadInfo.Information(contentLength)
-					}, func(content []byte, err error, stop *bool) {
-						downloadInfo.Progress(content, err, stop)
-					}); err != nil {
-						downloadInfo.CompleteSignal <- true
-						downloadInfo.Progress(nil, err, &stop)
-						downloadInfo.Failed(downloadMusic, err)
-						continue
-					}
-					downloadInfo.CompleteSignal <- true
-					// download Lyric
-					lyricPath := downloadInfo.DownloadPath + "/lyric.lrc"
-					if err := this.readNetworkFile(downloadMusic.LyricPath, lyricPath); err == nil {
-						// download lyric success
-					} else {
-						fmt.Println("download lyric failed: ", err)
-						downloadInfo.Failed(downloadMusic, err)
-						continue
-					}
+				this.downloadMutex.Lock()
+				if this.downloadRef < MaxDownloadQueue {
+					this.downloadRef++
+					this.downloadMutex.Unlock()
+					go func(downloadInfo *DownloadElement, this *downloadManager) {
+						switch downloadInfo.DownloadType {
+						case DownloadTypeMusic:
+							downloadMusic := downloadInfo.DownloadContent.(*element.MusicInfo)
+							fmt.Println("StartDownload Music: ", downloadMusic.MusicName)
+							os.Mkdir(downloadInfo.DownloadPath, os.ModeType|os.ModePerm)
+							// download Music
+							musicPath := downloadInfo.DownloadPath + "/music.mp3"
+							fmt.Println(downloadMusic.MusicPath)
+							if err := this.readNetworkFileUsingCallback(downloadMusic.MusicPath, musicPath, func(contentLength int) {
+								downloadInfo.Information(contentLength)
+							}, func(content []byte, err error, stop *bool) {
+								downloadInfo.Progress(content, err, stop)
+							}); err != nil {
+								downloadInfo.CompleteSignal <- true
+								downloadInfo.Progress(nil, err, &stop)
+								downloadInfo.Failed(downloadMusic, err)
+								this.releaseDownloadRef()
+								return
+							}
+							downloadInfo.CompleteSignal <- true
+							// download Lyric
+							lyricPath := downloadInfo.DownloadPath + "/lyric.lrc"
+							if err := this.readNetworkFile(downloadMusic.LyricPath, lyricPath); err == nil {
+								// download lyric success
+							} else {
+								fmt.Println("download lyric failed: ", err)
+								downloadInfo.Failed(downloadMusic, err)
+								this.releaseDownloadRef()
+								return
+							}
 
-					// download big cover
-					bigCoverImagePath := downloadInfo.DownloadPath + "/big_cover.jpg"
-					if err := this.readNetworkFile(downloadMusic.BigCoverImagePath, bigCoverImagePath); err == nil {
-						// download big cover success
-					} else {
-						fmt.Println("download big cover failed: ", err)
-						downloadInfo.Failed(downloadMusic, err)
-						continue
-					}
+							// download big cover
+							bigCoverImagePath := downloadInfo.DownloadPath + "/big_cover.jpg"
+							if err := this.readNetworkFile(downloadMusic.BigCoverImagePath, bigCoverImagePath); err == nil {
+								// download big cover success
+							} else {
+								fmt.Println("download big cover failed: ", err)
+								downloadInfo.Failed(downloadMusic, err)
+								this.releaseDownloadRef()
+								return
+							}
 
-					// download small cover
-					smallCoverImagePath := downloadInfo.DownloadPath + "/small_cover.jpg"
-					if err := this.readNetworkFile(downloadMusic.SmallCoverImagePath, smallCoverImagePath); err == nil {
-						// download small cover success
-					} else {
-						fmt.Println("download small cover failed: ", err)
-						downloadInfo.Failed(downloadMusic, err)
-						continue
-					}
+							// download small cover
+							smallCoverImagePath := downloadInfo.DownloadPath + "/small_cover.jpg"
+							if err := this.readNetworkFile(downloadMusic.SmallCoverImagePath, smallCoverImagePath); err == nil {
+								// download small cover success
+							} else {
+								fmt.Println("download small cover failed: ", err)
+								downloadInfo.Failed(downloadMusic, err)
+								this.releaseDownloadRef()
+								return
+							}
 
-					// download compete, callback
-					downloadInfo.Complete(downloadMusic)
-				case DownloadTypeSingle:
-					downloadURL := downloadInfo.DownloadContent.(string)
-					fmt.Println("StartDownload URL: ", downloadURL)
-					if err := this.readNetworkFileUsingCallback(downloadURL, downloadInfo.DownloadPath, func(contentLength int) {
-						downloadInfo.Information(contentLength)
-					}, func(content []byte, err error, stop *bool) {
-						downloadInfo.Progress(content, err, stop)
-					}); err != nil {
-						var stop bool
-						downloadInfo.Progress(nil, err, &stop)
-					}
-					downloadInfo.CompleteSignal <- true
-				default:
-					fmt.Println("Download Type Error!")
+							// download compete, callback
+							downloadInfo.Complete(downloadMusic)
+							this.releaseDownloadRef()
+						case DownloadTypeSingle:
+							downloadURL := downloadInfo.DownloadContent.(string)
+							fmt.Println("StartDownload URL: ", downloadURL)
+							if err := this.readNetworkFileUsingCallback(downloadURL, downloadInfo.DownloadPath, func(contentLength int) {
+								downloadInfo.Information(contentLength)
+							}, func(content []byte, err error, stop *bool) {
+								downloadInfo.Progress(content, err, stop)
+							}); err != nil {
+								var stop bool
+								downloadInfo.Progress(nil, err, &stop)
+							}
+							this.releaseDownloadRef()
+							downloadInfo.CompleteSignal <- true
+						default:
+							fmt.Println("Download Type Error!")
+						}
+					}(downloadInfo, this)
+				} else {
+					this.downloadMutex.Unlock()
 				}
 			} else {
 				this.mutex.Unlock()
