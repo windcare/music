@@ -21,6 +21,7 @@ func NewServiceManager() *ServiceManager {
 	service.musicController = NewMusicController()
 	service.accountController = NewAccountController()
 	service.pushMessageController = NewPushMessageController()
+	fmt.Println("Manage Create Success");
 	return service
 }
 
@@ -34,6 +35,7 @@ func (this *ServiceManager) InitService() {
 	webPath := config.ConfigManagerInstance().ReadWebResourcePath()
 	jsPath := webPath + "/src/view"
 	http.Handle("/js/", http.FileServer(http.Dir(jsPath)))
+	fmt.Println("Init service Success");
 }
 
 func (this *ServiceManager) UninitService() {
@@ -43,4 +45,5 @@ func (this *ServiceManager) UninitService() {
 func (this *ServiceManager) StartService() {
 	port := config.ConfigManagerInstance().ReadPort()
 	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	fmt.Println("StartService Success");
 }
