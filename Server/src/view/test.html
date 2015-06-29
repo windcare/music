@@ -86,7 +86,7 @@
 		function getMusicList() {
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/message" ,
+				url: "http://{{.Host}}:{{.Port}}/message" ,
 				data: "action=getMusicList",
 				success: function(data) {
 					console.log(data);
@@ -102,7 +102,7 @@
 			var musicId = $(".musicid").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/message" ,
+				url: "http://{{.Host}}:{{.Port}}/message" ,
 				data: "action=downloadMusic&musicId=" + musicId,
 				success: function(data) {
 					console.log(data);
@@ -118,7 +118,7 @@
 			var musicId = $(".musicid").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/message" ,
+				url: "http://{{.Host}}:{{.Port}}/message" ,
 				data: "action=downloadBigCover&musicId=" + musicId,
 				success: function(data) {
 					console.log(data);
@@ -134,7 +134,7 @@
 			var musicId = $(".musicid").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/message" ,
+				url: "http://{{.Host}}:{{.Port}}/message" ,
 				data: "action=downloadSmallCover&musicId=" + musicId,
 				success: function(data) {
 					console.log(data);
@@ -151,7 +151,7 @@
 			var musicId = $(".musicid").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/message" ,
+				url: "http://{{.Host}}:{{.Port}}/message" ,
 				data: "action=downloadLyric&musicId=" + musicId,
 				success: function(data) {
 					console.log(data);
@@ -167,7 +167,7 @@
 		function playMusic() {
 			var musicId = $(".musicid").val();
 			$(".playAudio").remove();
-			$(".playButton").before('<audio class="playAudio" src="{{.Host}}:{{.Port}}/message?action=downloadMusic&musicId=' + musicId + '" autobuffer autoloop loop controls></audio>');
+			$(".playButton").before('<audio class="playAudio" src="http://{{.Host}}:{{.Port}}/message?action=downloadMusic&musicId=' + musicId + '" autobuffer autoloop loop controls></audio>');
 			$(".playAudio")[0].play();
 		}
 
@@ -187,7 +187,7 @@
 			};
 			$.ajax({
 				type: 'POST',
-				url: '{{.Host}}:{{.Port}}/account',
+				url: 'http://{{.Host}}:{{.Port}}/account',
 				data: JSON.stringify(sendData),
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
@@ -214,7 +214,7 @@
 			};
 			$.ajax({
 				type: 'POST',
-				url: '{{.Host}}:{{.Port}}/account',
+				url: 'http://{{.Host}}:{{.Port}}/account',
 				data: JSON.stringify(sendData),
 				contentType: "application/json; charset=utf-8",
 				// dataType: "json",
@@ -233,7 +233,7 @@
 		function fetchRandomList() {
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/music" ,
+				url: "http://{{.Host}}:{{.Port}}/music" ,
 				data: "action=fetchRandomList",
 				success: function(data) {
 					console.log(data);
@@ -249,7 +249,7 @@
 		function fetchLoveList() {
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/music" ,
+				url: "http://{{.Host}}:{{.Port}}/music" ,
 				data: "action=fetchLoveList",
 				success: function(data) {
 					console.log(data);
@@ -266,7 +266,7 @@
 			var musicId = $(".controlmusicid").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/music" ,
+				url: "http://{{.Host}}:{{.Port}}/music" ,
 				data: "action=loveMusic&degree=1&musicId=" + musicId,
 				success: function(data) {
 					console.log(data);
@@ -282,7 +282,7 @@
 			var musicId = $(".controlmusicid").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/music" ,
+				url: "http://{{.Host}}:{{.Port}}/music" ,
 				data: "action=loveMusic&degree=0&musicId=" + musicId,
 				success: function(data) {
 					console.log(data);
@@ -299,7 +299,7 @@
 			var musicId = $(".controlmusicid").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/music" ,
+				url: "http://{{.Host}}:{{.Port}}/music" ,
 				data: "action=listenMusic&musicId=" + musicId,
 				success: function(data) {
 					console.log(data);
@@ -316,7 +316,7 @@
 			var key = $(".searchkey").val();
 			$.ajax({
 				type: 'GET',
-				url: "{{.Host}}:{{.Port}}/music" ,
+				url: "http://{{.Host}}:{{.Port}}/music" ,
 				data: "action=searchMusic&key=" + key,
 				success: function(data) {
 					console.log(data);
