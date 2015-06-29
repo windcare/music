@@ -1,2 +1,2 @@
-# windy
 # music
+a personal music app

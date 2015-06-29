@@ -1,7 +1,4 @@
 #!/bin/bash
-declare -x GOPATH="/Users/xiaozoutianxia/mylibrary/go"
-declare -x GOROOT="/Users/xiaozoutianxia/Downloads/go"
-echo $GOPATH
 current_go_path=$GOPATH
 current_path=$(cd `dirname $0`; pwd)
 GOPATH=$GOPATH":"$current_path

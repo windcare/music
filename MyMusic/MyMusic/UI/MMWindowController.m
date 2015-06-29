@@ -65,6 +65,7 @@
         animation.fillMode = kCAFillModeForwards;
         animation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut]; 
         animation.delegate = self;
+        [animation setValue:@"popViewAnimated" forKey:[kAnimationId copy]];
         [topView.layer addAnimation:animation forKey:nil];
     } else {
         [topView removeFromSuperview];
@@ -76,7 +77,7 @@
     NSView *topView = self.views.lastObject;
     [topView removeFromSuperview];
     [self.views removeLastObject];
-} 
+}
 
 - (void)popToRootViewAnimated:(BOOL)animated {
     

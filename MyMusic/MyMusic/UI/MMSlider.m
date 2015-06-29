@@ -114,10 +114,10 @@
     
     self.currentKnobImage = knobDownImage;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(sliderDidBeginDragging:)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(sliderDidBeginDragging:slider:)]) {
       double clickTime = [self timeAtClickPoint:theEvent.locationInWindow];
       BOOL forward = (clickTime >= self.dragTime);
-      [self.delegate sliderDidBeginDragging:forward];
+      [self.delegate sliderDidBeginDragging:forward slider:self];
     }
     
     [self mouseDown:theEvent];
@@ -129,8 +129,8 @@
   if (self.isEnabled) {
     self.currentKnobImage = knobImage;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(sliderDidEndDragging)]) {
-      [self.delegate sliderDidEndDragging];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(sliderDidEndDragging:)]) {
+        [self.delegate sliderDidEndDragging:self];
     }
     
     [self performSelector:@selector(setEndDragging) withObject:nil afterDelay:0.25];

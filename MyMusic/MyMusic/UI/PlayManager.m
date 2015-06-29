@@ -50,9 +50,16 @@
 
 - (void)setPlayMusicList:(NSArray *)musicInfos {
     self.musicList = [NSMutableArray arrayWithArray:musicInfos];
+    self.currentIndex = 0;
 }
 
 - (void)playMusic:(MusicInfo *)musicInfo {
+    [self.musicList enumerateObjectsUsingBlock:^(MusicInfo *info, NSUInteger idx, BOOL *stop) {
+        if (info.musicId == musicInfo.musicId) {
+            self.currentIndex = idx;
+            *stop = YES;
+        }
+    }];
     [self.controller setDuration:(NSTimeInterval)musicInfo.duration];
     [self.controller setProgress:0.0f];
     [self.controller setMusicName:musicInfo.musicName authorName:musicInfo.musicAuthor];
@@ -61,6 +68,7 @@
             MusicFile *musicFile = [[MusicFile alloc] init];
             musicFile.audioFileURL = [NSURL URLWithString:path];
             [self.player play:musicFile]; 
+            [self.controller startParserLyric:musicInfo];
         }
         else {
             

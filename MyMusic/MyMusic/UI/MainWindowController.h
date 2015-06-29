@@ -8,11 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "MMWindowController.h"
+#import "MusicInfo.h"
 
 @interface MainWindowController : MMWindowController
 
 + (MainWindowController *)sharedMainWindowController;
 
+- (void)startParserLyric:(MusicInfo *)music;
 - (void)setMusicName:(NSString *)musicName authorName:(NSString *)artist;
 - (void)setDuration:(NSTimeInterval)duration;
 - (void)setProgress:(NSTimeInterval)progress;

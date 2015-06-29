@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-const fetchCount = 10
+const fetchCount = 100
 
 type myMusicPlayer struct {
 }
@@ -40,11 +40,11 @@ func (this *myMusicPlayer) FetchMusicById(musicId int) *element.MusicInfo {
 	return nil
 }
 
-func (this *myMusicPlayer) SearchMusic(keyword string) []*element.MusicInfo {
+func (this *myMusicPlayer) SearchMusic(keyword string) ([]*element.MusicInfo, error) {
 	musicList, err := model.MusicModelInstance().SearchMusic(keyword)
 	if err == nil {
-		return musicList
+		return musicList, nil
 	}
 
-	return nil
+	return nil, err
 }

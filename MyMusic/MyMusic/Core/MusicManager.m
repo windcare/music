@@ -171,6 +171,39 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
     }];
 }
 
+- (void)searchMusic:(NSString *)keyword 
+         completion:(void (^)(int errorCode, NSArray *musicList))completion {
+    NSString *url = [kAPIURLBase stringByAppendingString:[NSString stringWithFormat:@"?action=searchMusic&key=%@", keyword]];
+    NSURL *fetchRadomListURL = [NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:fetchRadomListURL];
+    [self sendRequest:mutableRequest success:^(NSDictionary *response) {
+        NSLog(@"response: %@", response);
+        int errorCode = [response[@"code"] intValue];
+        if (errorCode == 0 && [response[@"param"][@"musicList"] isKindOfClass:[NSArray class]]) {
+            NSArray *musicArr = response[@"param"][@"musicList"];
+            NSMutableArray *musicList = [NSMutableArray array];
+            if (musicArr.count) {
+                [musicArr enumerateObjectsUsingBlock:^(NSDictionary *musicElement, NSUInteger idx, BOOL *stop) {
+                    MusicInfo *info = [[MusicInfo alloc] init];
+                    info.musicId = [musicElement[@"id"] integerValue];
+                    info.musicName = musicElement[@"musicname"];
+                    info.musicAuthor = musicElement[@"artist"];
+                    info.albumName = musicElement[@"albumname"];
+                    info.duration = [musicElement[@"time"] integerValue];
+                    [musicList addObject:info];
+                }];
+            }
+            completion(0, [musicList copy]);
+        }
+        else {
+            completion(errorCode, nil);
+        }
+    } failed:^(NSError *error) {
+        int errorCode = (int)error.code;
+        completion(errorCode, nil);
+    }];
+}
+
 - (void)downloadNetworkFile:(NSURL *)url targetPath:(NSString *)path complete:(void (^)(int errorCode))completion {
     //下载附件   
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -219,6 +252,7 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
 - (void)downloadLyric:(NSInteger)musicId complete:(void (^)(int errorCode, NSString *path))completion {
     NSString *path = [[MusicCache sharedCache] getResourcePathWithMusicId:musicId resourceType:CacheResourceType_Lyric];
     if (path.length == 0) {
+        path = [[MusicCache sharedCache] cacheResourceWithMusicId:musicId resourceType:CacheResourceType_Lyric];
         NSString *urlBase = [NSString stringWithFormat:@"%@?action=downloadLyric&musicId=%ld", kDownloadURLBase, musicId];
         [self downloadNetworkFile:[NSURL URLWithString:urlBase] targetPath:path complete:^(int errorCode) {
             completion(errorCode, path);

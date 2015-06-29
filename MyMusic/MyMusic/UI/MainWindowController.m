@@ -17,13 +17,16 @@
 #import "MyPlayer.h"
 #import "MMRotatedImage.h"
 #import "PlayManager.h"
+#import "MMSearchView.h"
+#import "MMLyricView.h"
+#import <QuartzCore/QuartzCore.h>
 
 static const CGFloat kWindowOriginYMargin = 30.0f;
 
 static const CGFloat kWindowOriginHeight = 120.0f;
 static const CGFloat kWindowFullHeight = 500.0f;
 
-@interface MainWindowController () <MMSliderDelegate>
+@interface MainWindowController () <MMSliderDelegate, NSControlTextEditingDelegate, MMSearchViewDelegate>
 
 @property (nonatomic, weak) IBOutlet NSView *view1;
 @property (nonatomic, weak) IBOutlet NSView *view2;
@@ -33,14 +36,24 @@ static const CGFloat kWindowFullHeight = 500.0f;
 @property (nonatomic, weak) IBOutlet NSTextField *musicName;
 @property (nonatomic, weak) IBOutlet NSTextField *timeField;
 @property (nonatomic, weak) IBOutlet NSView *playListView;
+@property (nonatomic, weak) IBOutlet NSTextField *searchField;
 @property (nonatomic, weak) IBOutlet NSView *leftPanelView;
 @property (nonatomic, weak) IBOutlet NSButton *playBtn;
+@property (nonatomic, weak) IBOutlet NSView *listView;
+@property (nonatomic, weak) IBOutlet MMLyricView *lyricView;
 
 @property (nonatomic, assign) BOOL isFullScreen;
 @property (nonatomic, strong) NSArray *musicList;
 @property (nonatomic, assign) NSTimeInterval duration;
 @property (nonatomic, assign) BOOL isPlaying;
 @property (nonatomic, assign) BOOL isPaused;
+@property (nonatomic, assign) BOOL enableSetProgress;
+@property (nonatomic, assign) BOOL enableSetVolumn;
+@property (nonatomic, assign) BOOL lyricViewIsHide;
+@property (nonatomic, assign) BOOL isShowingLyricView;
+@property (nonatomic, assign) BOOL isshowTypeLyricShow;
+@property (nonatomic, assign) NSRect listOriginRect;
+@property (nonatomic, weak) IBOutlet MMSearchView *searchView;
 
 @end
 
@@ -61,6 +74,10 @@ static const CGFloat kWindowFullHeight = 500.0f;
     [self.tableView setDoubleAction:@selector(didDoubleClickFolderRow:)];
     [PlayManager sharedManager].controller = self;
     [self fetchMusic:MMMusicChannelChildren];
+    [self.searchView appendToView:self.window.contentView];
+    self.searchView.delegate = self;
+    self.enableSetProgress = YES;
+    self.lyricViewIsHide = YES;
 }
 
 + (MainWindowController *)sharedMainWindowController{
@@ -76,6 +93,16 @@ static const CGFloat kWindowFullHeight = 500.0f;
 - (IBAction)test:(id)sender {
     [(MMView *)self.view1 setBackgroundImage:[NSImage imageNamed:@"background"]];
     [self pushView:self.view1 animated:YES];
+}
+
+- (IBAction)showLyric:(id)sender {
+    if (self.lyricViewIsHide) {
+        [self showLyricView];
+    }
+    else {
+        [self hideLyricView];
+    }
+    self.lyricViewIsHide = !self.lyricViewIsHide;
 }
 
 - (IBAction)test1:(id)sender {
@@ -100,20 +127,55 @@ static const CGFloat kWindowFullHeight = 500.0f;
     [(MMWindow *)self.window showWindowAndMakeItKeyWindow];
 }
 
+- (void)showSmallSearchView {
+}
+
 
 - (void)_hideWindow {
     [self.window orderOut:nil];
 }
 
-- (void)sliderDidBeginDragging:(BOOL)forward {
-  NSLog(@"Begin Dragging");
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
+    if (commandSelector == @selector(insertNewline:)) {
+        
+    }
+    return NO;
 }
 
-- (void)sliderDidEndDragging {
-  NSLog(@"End Dragging");
+- (void)controlTextDidChange:(NSNotification *)obj {
+    NSResponder *firstResponder = [self.window firstResponder];
+    if ([firstResponder isKindOfClass:[NSText class]] && [[(NSText *)firstResponder delegate] isEqual:self.searchField]) {
+        NSString *keyword = self.searchField.stringValue;
+        [[MusicManager sharedManager] searchMusic:keyword completion:^(int errorCode, NSArray *musicList) {
+            if (errorCode == 0 && musicList.count) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.searchView setSearchContent:musicList];
+                    [self.searchView showAtPoint:NSMakePoint(10, 350)];
+                });
+            }
+            else {
+                [self.searchView hidden];
+                NSLog(@"errorCode: %d", errorCode);
+            }
+        }];
+    }
+}
+
+- (void)sliderDidBeginDragging:(BOOL)forward slider:(MMSlider *)slider {
+    if (slider == self.slider) {
+        self.enableSetProgress = NO;
+    }
+}
+
+- (void)sliderDidEndDragging:(MMSlider *)slider {
+    if (slider == self.slider) {
+        self.enableSetProgress = YES;
+        [[PlayManager sharedManager] setProgress:self.slider.currentTime];
+    }
 }
 
 - (IBAction)progressBarClickedOrDragged:(id)sender {
+    self.enableSetProgress = NO;
 }
 
 - (IBAction)togglerFullScreen:(id)sender {
@@ -123,6 +185,15 @@ static const CGFloat kWindowFullHeight = 500.0f;
         windowFrame.origin.y -= (kWindowFullHeight - kWindowOriginHeight);
         windowFrame.size.height = kWindowFullHeight;
         [self.window setFrame:windowFrame display:YES animate:YES];
+        static BOOL isFirst = YES;
+        if (isFirst) {
+            NSRect listViewRect = self.listView.frame;
+            self.listOriginRect = listViewRect;
+            listViewRect.origin.x = -listViewRect.size.width;
+            self.lyricView.frame = listViewRect;
+            [self.window.contentView addSubview:self.lyricView];
+        }
+        isFirst = NO;
     } else {
         self.isFullScreen = NO;
         windowFrame.origin.y += (kWindowFullHeight - kWindowOriginHeight);
@@ -131,16 +202,97 @@ static const CGFloat kWindowFullHeight = 500.0f;
     }
 }
 
+- (void)showLyricView {
+    if (self.isShowingLyricView) {
+        return;
+    }
+    self.isshowTypeLyricShow = YES;
+    self.isShowingLyricView = YES;
+    self.lyricView.wantsLayer = YES;
+    self.listView.wantsLayer = YES;
+    
+    NSPoint lyricBeginPoint = { -self.listView.layer.frame.size.width, self.listView.layer.frame.origin.y };
+    NSPoint lyricEndPoint = { 0, self.listView.layer.frame.origin.y };
+    CABasicAnimation *lyricAnimation = [CABasicAnimation animationWithKeyPath:@"position"]; 
+    lyricAnimation.fromValue = [NSValue valueWithPoint:lyricBeginPoint];
+    lyricAnimation.toValue = [NSValue valueWithPoint:lyricEndPoint];
+    lyricAnimation.removedOnCompletion = NO; 
+    lyricAnimation.duration = 0.8;
+    lyricAnimation.fillMode = kCAFillModeForwards;
+    [lyricAnimation setValue:@"showLyricView" forKey:[kAnimationId copy]];
+    lyricAnimation.delegate = self;
+    lyricAnimation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut]; 
+    
+    NSPoint listBeginPoint = { 0, self.listView.layer.frame.origin.y };
+    NSPoint listEndPoint = { self.listView.layer.frame.size.width, self.listView.layer.frame.origin.y };
+    CABasicAnimation *listAnimation = [CABasicAnimation animationWithKeyPath:@"position"]; 
+    listAnimation.fromValue = [NSValue valueWithPoint:listBeginPoint];
+    listAnimation.toValue = [NSValue valueWithPoint:listEndPoint];
+    listAnimation.removedOnCompletion = NO; 
+    listAnimation.duration = 0.8;
+    listAnimation.fillMode = kCAFillModeForwards;
+    listAnimation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut];
+    [self.lyricView.layer addAnimation:lyricAnimation forKey:nil];
+    [self.listView.layer addAnimation:listAnimation forKey:nil];
+}
+
+- (void)hideLyricView {
+    if (self.isShowingLyricView) {
+        return;
+    }
+    self.isshowTypeLyricShow = NO;
+    self.isShowingLyricView = YES;
+    self.lyricView.wantsLayer = YES;
+    self.listView.wantsLayer = YES;
+    
+    NSPoint lyricBeginPoint = { 0, self.listView.layer.frame.origin.y };
+    NSPoint lyricEndPoint = { -self.listView.layer.frame.size.width, self.listView.layer.frame.origin.y };
+    CABasicAnimation *lyricAnimation = [CABasicAnimation animationWithKeyPath:@"position"]; 
+    lyricAnimation.fromValue = [NSValue valueWithPoint:lyricBeginPoint];
+    lyricAnimation.toValue = [NSValue valueWithPoint:lyricEndPoint];
+    lyricAnimation.removedOnCompletion = NO; 
+    lyricAnimation.duration = 0.8;
+    lyricAnimation.fillMode = kCAFillModeForwards;
+    lyricAnimation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut]; 
+    
+    NSPoint listBeginPoint = { self.listView.layer.frame.size.width, self.listView.layer.frame.origin.y };
+    NSPoint listEndPoint = { 0, self.listView.layer.frame.origin.y };
+    CABasicAnimation *listAnimation = [CABasicAnimation animationWithKeyPath:@"position"]; 
+    listAnimation.fromValue = [NSValue valueWithPoint:listBeginPoint];
+    listAnimation.toValue = [NSValue valueWithPoint:listEndPoint];
+    listAnimation.removedOnCompletion = NO; 
+    listAnimation.duration = 0.8;
+    listAnimation.fillMode = kCAFillModeForwards;
+    [listAnimation setValue:@"hideLyricView" forKey:[kAnimationId copy]];
+    listAnimation.delegate = self;
+    listAnimation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut]; 
+    [self.lyricView.layer addAnimation:lyricAnimation forKey:nil];
+    [self.listView.layer addAnimation:listAnimation forKey:nil];
+}
+
+- (void)animationDidStop:(CAAnimation *)animation finished:(BOOL)flag {
+    NSString *key = [animation valueForKey:[kAnimationId copy]];
+    if ([key isEqualToString:@"showLyricView"] || [key isEqualToString:@"hideLyricView"]) {
+        self.isShowingLyricView = NO;
+        if (!self.isshowTypeLyricShow) {
+            self.listView.frame = self.listOriginRect;
+            NSRect tmpRect = self.listOriginRect;
+            tmpRect.origin.x = -tmpRect.size.width;
+            self.lyricView.frame = tmpRect;
+        } else {
+            self.lyricView.frame = self.listOriginRect;
+            NSRect tmpRect = self.listOriginRect;
+            tmpRect.origin.x = tmpRect.size.width;
+            self.listView.frame = tmpRect;
+        }
+    }
+    else {
+        [super animationDidStop:animation finished:flag];
+    }
+}
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     return self.musicList.count;
-}
-
-- (void)tableView:(NSTableView *)tableView
-  willDisplayCell:(id)cell
-   forTableColumn:(NSTableColumn *)tableColumn
-              row:(NSInteger)row {
-    [cell setBackgroundColor:[NSColor whiteColor]];
 }
 
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -153,6 +305,14 @@ static const CGFloat kWindowFullHeight = 500.0f;
     NSUInteger row = self.tableView.clickedRow;
     MusicInfo *selectMusic = self.musicList[row];
     [[PlayManager sharedManager] playMusic:selectMusic];
+}
+
+- (void)startParserLyric:(MusicInfo *)music {
+    [self.lyricView startPlayLyric:music];
+}
+
+- (void)didClickMusic:(MusicInfo *)music {
+    [[PlayManager sharedManager] playMusic:music];
 }
 
 - (IBAction)changeList:(id)sender {
@@ -194,12 +354,17 @@ static const CGFloat kWindowFullHeight = 500.0f;
 
 - (void)setDuration:(NSTimeInterval)duration {
     _duration = duration;
+    self.slider.currentTime = 0.0f;
+    self.slider.duration = duration;
 }
 
 - (void)setProgress:(NSTimeInterval)progress {
-    self.slider.currentTime = progress;
-    NSString *showTime = [NSString stringWithFormat:@"%ld:%ld/%ld:%ld", (NSInteger)progress / 60,  (NSInteger)progress % 60, (NSInteger)self.duration / 60, (NSInteger)self.duration % 60];
+    if (self.enableSetProgress) {
+        self.slider.currentTime = progress;
+    }
+    NSString *showTime = [NSString stringWithFormat:@"%ld:%02ld/%ld:%02ld", (NSInteger)progress / 60,  (NSInteger)progress % 60, (NSInteger)self.duration / 60, (NSInteger)self.duration % 60];
     self.timeField.stringValue = showTime;
+    [self.lyricView setProgress:progress];
 }
 
 - (void)setCover:(NSImage *)coverImage {
@@ -215,7 +380,7 @@ static const CGFloat kWindowFullHeight = 500.0f;
 }
 
 - (void)setVolumn:(CGFloat)volumn {
-    
+    [[PlayManager sharedManager] setVolumn:volumn];
 }
 
 - (void)fetchMusic:(MMMusicChannel)channel {

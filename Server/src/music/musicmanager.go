@@ -45,10 +45,39 @@ func (this *musicManager) SetPlayer(playerType int) {
 	}
 }
 
-func (this *musicManager) FetchMusicList(channel int) []*element.MusicInfo {
+func (this *musicManager) FetchMusicList(userId, channel int) []*element.MusicInfo {
+	var retMusicList []*element.MusicInfo = nil
 	musicList := this.palyer.FetchMusicList(channel)
 	this.SaveMusicList(musicList)
+	for _, music := range musicList {
+		loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
+		if err != nil {
+			fmt.Println("FetchMusicList Error: ", err)
+			return nil
+		}
+		switch loveDegree {
+		case element.LoveDegreeNone:
+			retMusicList = append(retMusicList, music)
+		case element.LoveDegreeHate:
+		case element.LoveDegreeLike:
+			music.IsLoveMusic = true
+			retMusicList = append(retMusicList, music)
+		}
+	}
 	return musicList
+}
+
+func (this *musicManager) SearchMusic(keyword string) ([]*element.MusicInfo, error) {
+	this.palyer = player.BaiduMusicPlayerInstance()
+	musicList, err := this.palyer.SearchMusic(keyword)
+	if err == nil && len(musicList) != 0 {
+		this.SaveMusicList(musicList)
+	}
+	for _, music := range musicList {
+		fmt.Printf("id: %d\n", music.MusicId)
+		fmt.Printf("name: %s\n", music.MusicName)
+	}
+	return musicList, err
 }
 
 func (this *musicManager) DownloadMusicList(musicList []*element.MusicInfo) {

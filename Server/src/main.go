@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-            fmt.Println("StartService")
 	server := controller.NewServiceManager()
 	server.InitService()
 	server.StartService()

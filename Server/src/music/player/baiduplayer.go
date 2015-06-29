@@ -187,29 +187,29 @@ func (this *baiduMusicPlayer) FetchMusicById(musicId int) *element.MusicInfo {
 	return retMusicList[0]
 }
 
-func (this *baiduMusicPlayer) SearchMusic(keyword string) []*element.MusicInfo {
+func (this *baiduMusicPlayer) SearchMusic(keyword string) ([]*element.MusicInfo, error) {
 	searchURL := fmt.Sprintf(baiduMusicSearchURLBase, keyword, time.Now().Unix())
 	resp, err := http.Get(searchURL)
 	if err != nil {
 		fmt.Println("SearchMusic Error: ", err)
-		return nil
+		return nil, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("SearchMusic Read Body Error: ", err)
-		return nil
+		return nil, err
 	}
 	js, err := simplejson.NewJson(body)
 	if err != nil {
 		fmt.Println("SearchMusic parser json Error: ", err)
-		return nil
+		return nil, err
 	}
 	songList := js.Get("song").MustArray()
 	musicIdList := make([]string, len(songList))
 	for index, music := range songList {
 		info := music.(map[string]interface{})
-		id, _ := info["songid"].(json.Number).Int64()
+		id, _ := strconv.Atoi(info["songid"].(string))
 		musicIdList[index] = fmt.Sprintf("%d", id)
 	}
 
@@ -219,9 +219,11 @@ func (this *baiduMusicPlayer) SearchMusic(keyword string) []*element.MusicInfo {
 
 	var retMusicList []*element.MusicInfo = nil
 	for _, music := range musicList {
-		retMusicList = append(retMusicList, music)
+		if this.checkMusicIsValid(music) {
+			retMusicList = append(retMusicList, music)
+		}
 	}
-	return retMusicList
+	return retMusicList, nil
 }
 
 func (this *baiduMusicPlayer) parserMusicList(js *simplejson.Json) []string {
@@ -312,11 +314,11 @@ func (this *baiduMusicPlayer) parserMusicLinkList(js *simplejson.Json, musicList
 			}
 
 			var music *element.MusicInfo = (*musicList)[id]
-			if musicInfo["showLink"] == nil {
+			if musicInfo["songLink"] == nil {
 				delete(*musicList, id)
 				continue
 			}
-			music.MusicPath = musicInfo["showLink"].(string)
+			music.MusicPath = musicInfo["songLink"].(string)
 			if musicInfo["lrcLink"] == nil {
 				delete(*musicList, id)
 				continue
@@ -336,8 +338,8 @@ func (this *baiduMusicPlayer) parserMusicLinkList(js *simplejson.Json, musicList
 }
 
 func (this *baiduMusicPlayer) checkMusicIsValid(musicInfo *element.MusicInfo) bool {
-	// 非http://yinyueshiting.baidu.com个歌曲屏蔽
-	if strings.HasPrefix(musicInfo.MusicPath, "http://yinyueshiting.baidu.com") {
+	// http://pan.baidu.com/share/link歌曲屏蔽
+	if strings.HasPrefix(musicInfo.MusicPath, "http://pan.baidu.com/share/link") == false {
 		if musicInfo.LyricPath == "http://fm.baidu.com" {
 			// 将歌词不对的，直接将歌词赋值空
 			musicInfo.LyricPath = ""

@@ -4,11 +4,6 @@ import (
 // "fmt"
 )
 
-const (
-	BaiduMusicSourceType = iota
-	LocalMusicSourceType
-)
-
 type MusicInfo struct {
 	MusicName           string
 	MusicAuthor         string
@@ -23,6 +18,7 @@ type MusicInfo struct {
 	MusicUUID           string
 	MusicId             int
 	NetMusicId          int
+	IsLoveMusic         bool
 }
 
 type LoveMusicInfo struct {

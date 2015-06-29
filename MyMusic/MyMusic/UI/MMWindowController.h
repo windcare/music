@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+static const NSString * kAnimationId = @"kAnimmationId";
+
 typedef enum : NSInteger {
     PushTypeFromLeft = 0x01,
     PushTypeFromRight = 0x02,

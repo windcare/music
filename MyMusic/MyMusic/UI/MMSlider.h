@@ -18,7 +18,7 @@
 
 @protocol MMSliderDelegate <NSObject>
 
-- (void)sliderDidBeginDragging:(BOOL)forward;
-- (void)sliderDidEndDragging;
+- (void)sliderDidBeginDragging:(BOOL)forward slider:(MMSlider *)slider;
+- (void)sliderDidEndDragging:(MMSlider*)slider;
 
 @end

@@ -58,12 +58,19 @@ typedef enum : NSInteger {
                password:(NSString *)password 
              completion:(void (^)(int errorCode))completion;
 
-- (void)downloadMusic:(NSInteger)musicId complete:(void (^)(int errorCode, NSString *path))completion;
+- (void)searchMusic:(NSString *)keyword 
+         completion:(void (^)(int errorCode, NSArray *musicList))completion;
 
-- (void)downloadCoverImage:(NSInteger)musicId complete:(void (^)(int errorCode, NSString *path))completion;
+- (void)downloadMusic:(NSInteger)musicId 
+             complete:(void (^)(int errorCode, NSString *path))completion;
 
-- (void)downloadLyric:(NSInteger)musicId complete:(void (^)(int errorCode, NSString *path))completion;
+- (void)downloadCoverImage:(NSInteger)musicId 
+                  complete:(void (^)(int errorCode, NSString *path))completion;
 
-- (void)loveMusic:(NSInteger)musicId loveDegree:(NSInteger)degree;
+- (void)downloadLyric:(NSInteger)musicId 
+             complete:(void (^)(int errorCode, NSString *path))completion;
+
+- (void)loveMusic:(NSInteger)musicId 
+       loveDegree:(NSInteger)degree;
 
 @end

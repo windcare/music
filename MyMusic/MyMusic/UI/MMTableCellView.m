@@ -31,7 +31,7 @@
     }];
     self.musicName.stringValue = self.musicInfo.musicName;
     self.musicAuthor.stringValue = self.musicInfo.musicAuthor;
-    self.time.stringValue = [NSString stringWithFormat:@"%ld:%ld", self.musicInfo.duration / 60, self.musicInfo.duration % 60];
+    self.time.stringValue = [NSString stringWithFormat:@"%ld:%02ld", self.musicInfo.duration / 60, self.musicInfo.duration % 60];
     [self setNeedsDisplay:YES];
 }
 

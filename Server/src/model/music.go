@@ -235,12 +235,26 @@ func (this *musicModel) LoveMusic(userId int, musicId int, degree int) error {
 		return errors.New("打开数据库失败")
 	}
 	defer DatabaseInstance().Close()
-	var currentTime = time.Now().Unix()
-	stmt, err := DatabaseInstance().DB.Prepare("insert INTO lovelist(userid, musicid, time, degree) VALUES(?, ?, ?, ?)")
+	rows, err := DatabaseInstance().DB.Query("select * from lovelist where userid = ? and musicid = ?", userId, musicId)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
-	stmt.Exec(userId, musicId, currentTime, degree)
+	if rows.Next() {
+		var currentTime = time.Now().Unix()
+		stmt, err := DatabaseInstance().DB.Prepare("update lovelist set degree = ? and time = ? where userid = ? and musicid = ?")
+		if err != nil {
+			return err
+		}
+		stmt.Exec(degree, currentTime, userId, musicId)
+	} else {
+		var currentTime = time.Now().Unix()
+		stmt, err := DatabaseInstance().DB.Prepare("insert INTO lovelist(userid, musicid, time, degree) VALUES(?, ?, ?, ?)")
+		if err != nil {
+			return err
+		}
+		stmt.Exec(userId, musicId, currentTime, degree)
+	}
 	return nil
 }
 
@@ -302,6 +316,26 @@ func (this *musicModel) CheckMusicIsExist(musicId int) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func (this *musicModel) GetMusicLoveDegree(userId, musicId int) (int, error) {
+	if DatabaseInstance().Open() != nil {
+		return 0, errors.New("打开数据库失败")
+	}
+	defer DatabaseInstance().Close()
+	rows, err := DatabaseInstance().DB.Query("select degree from lovelist where musicId = ? and userid = ?", musicId, userId)
+	if err != nil {
+		return 0, err
+	}
+	if rows.Next() {
+		var loveDegree int
+		err = rows.Scan(&loveDegree)
+		if err != nil {
+			return 0, err
+		}
+		return loveDegree, nil
+	}
+	return 0, nil
 }
 
 func (this *musicModel) QueryMusicById(musicId int) (*element.MusicInfo, error) {

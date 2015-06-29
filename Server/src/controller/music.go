@@ -15,11 +15,12 @@ import (
 )
 
 type MusicElementPacket struct {
-	MusicID    int    `json:"id"`
-	MusicName  string `json:"musicname"`
-	ArtistName string `json:"artist"`
-	AlbumName  string `json:"albumname"`
-	MusicTime  int    `json:"time"`
+	MusicID     int    `json:"id"`
+	MusicName   string `json:"musicname"`
+	ArtistName  string `json:"artist"`
+	AlbumName   string `json:"albumname"`
+	MusicTime   int    `json:"time"`
+	IsLoveMusic bool   `json:"love"`
 }
 
 type MusicListPacket struct {
@@ -89,7 +90,7 @@ func (this *MusicController) fetchMusicWithProxy(url string, w http.ResponseWrit
 	this.readBodyByStream(resp.Body, w)
 }
 
-func (this *MusicController) fetchRandomList(w http.ResponseWriter, r *http.Request) {
+func (this *MusicController) fetchRandomList(userId int, w http.ResponseWriter, r *http.Request) {
 	channel, err := strconv.Atoi(r.Form.Get("channel"))
 	if err != nil {
 		NormalResponse(w, InvalidParam)
@@ -98,13 +99,13 @@ func (this *MusicController) fetchRandomList(w http.ResponseWriter, r *http.Requ
 		case 0:
 			// 私人频道
 			music.MusicManagerInstance().SetPlayer(music.MyPlayer)
-			musicList := music.MusicManagerInstance().FetchMusicList(channel)
+			musicList := music.MusicManagerInstance().FetchMusicList(userId, channel)
 			if len(musicList) != 0 {
 				this.writeMusicInfo(musicList, w)
 			}
 		default:
 			music.MusicManagerInstance().SetPlayer(music.BaiduPlayer)
-			musicList := music.MusicManagerInstance().FetchMusicList(channel)
+			musicList := music.MusicManagerInstance().FetchMusicList(userId, channel)
 			if len(musicList) != 0 {
 				this.writeMusicInfo(musicList, w)
 			}
@@ -121,6 +122,7 @@ func (this *MusicController) writeMusicInfo(musicList []*element.MusicInfo, w ht
 		elementPacket.ArtistName = music.MusicAuthor
 		elementPacket.AlbumName = music.AlbumName
 		elementPacket.MusicTime = music.MusicTime
+		elementPacket.IsLoveMusic = music.IsLoveMusic
 		packet.Param.MusicList = append(packet.Param.MusicList, elementPacket)
 		fmt.Println(music.MusicName)
 	}
@@ -216,7 +218,8 @@ func (this *MusicController) listenMusic(userId int, w http.ResponseWriter, r *h
 
 func (this *MusicController) searchMusic(w http.ResponseWriter, r *http.Request) {
 	key := r.Form.Get("key")
-	searchList, err := model.MusicModelInstance().SearchMusic(key)
+	fmt.Println("key = ", key)
+	searchList, err := music.MusicManagerInstance().SearchMusic(key)
 	if err != nil {
 		fmt.Println(err)
 		NormalResponse(w, DatabaseError)
@@ -237,6 +240,7 @@ func (this *MusicController) searchMusic(w http.ResponseWriter, r *http.Request)
 			fmt.Println("fetch Random List Marshal Error: ", err)
 		}
 		w.Header().Set("Content-Type", "application/json")
+		fmt.Println("body: ", string(body))
 		fmt.Fprintf(w, string(body))
 	}
 }
@@ -260,7 +264,7 @@ func (this *MusicController) MusicAction(w http.ResponseWriter, r *http.Request)
 			fmt.Println(action)
 			switch action {
 			case "fetchRandomList":
-				this.fetchRandomList(w, r)
+				this.fetchRandomList(userId, w, r)
 			case "fetchLoveList":
 				this.fetchLoveList(userId, w, r)
 			case "fetchListenedList":
