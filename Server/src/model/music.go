@@ -241,12 +241,20 @@ func (this *musicModel) LoveMusic(userId int, musicId int, degree int) error {
 		return err
 	}
 	if rows.Next() {
-		var currentTime = time.Now().Unix()
-		stmt, err := DatabaseInstance().DB.Prepare("update lovelist set degree = ? and time = ? where userid = ? and musicid = ?")
-		if err != nil {
-			return err
+		if degree == 0 {
+			stmt, err := DatabaseInstance().DB.Prepare("delete from lovelist where userid = ? and musicid = ?")
+			if err != nil {
+				return err
+			}
+			stmt.Exec(userId, musicId)
+		} else {
+			var currentTime = time.Now().Unix()
+			stmt, err := DatabaseInstance().DB.Prepare("update lovelist set degree = ? and time = ? where userid = ? and musicid = ?")
+			if err != nil {
+				return err
+			}
+			stmt.Exec(degree, currentTime, userId, musicId)
 		}
-		stmt.Exec(degree, currentTime, userId, musicId)
 	} else {
 		var currentTime = time.Now().Unix()
 		stmt, err := DatabaseInstance().DB.Prepare("insert INTO lovelist(userid, musicid, time, degree) VALUES(?, ?, ?, ?)")

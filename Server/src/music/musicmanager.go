@@ -45,39 +45,80 @@ func (this *musicManager) SetPlayer(playerType int) {
 	}
 }
 
-func (this *musicManager) FetchMusicList(userId, channel int) []*element.MusicInfo {
+func (this *musicManager) FetchMusicList(userId, channel int) ([]*element.MusicInfo, error) {
 	var retMusicList []*element.MusicInfo = nil
-	musicList := this.palyer.FetchMusicList(channel)
-	this.SaveMusicList(musicList)
-	for _, music := range musicList {
-		loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
+	switch channel {
+	case 0:
+	case 1:
+		musicList, err := model.MusicModelInstance().FetchLoveList(userId)
 		if err != nil {
-			fmt.Println("FetchMusicList Error: ", err)
-			return nil
+			return nil, err
 		}
-		switch loveDegree {
+		for _, music := range musicList {
+			retMusicList = append(retMusicList, music.MusicInfo)
+			music.IsLoveMusic = true
+		}
+	default:
+		musicList := player.BaiduMusicPlayerInstance().FetchMusicList(channel)
+		this.SaveMusicList(musicList)
+		for _, music := range musicList {
+			loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
+			if err != nil {
+				fmt.Println("FetchMusicList Error: ", err)
+				return nil, err
+			}
+			switch loveDegree {
+			case element.LoveDegreeNone:
+				retMusicList = append(retMusicList, music)
+			case element.LoveDegreeHate:
+			case element.LoveDegreeLike:
+				music.IsLoveMusic = true
+				retMusicList = append(retMusicList, music)
+			}
+		}
+	}
+	return retMusicList, nil
+}
+
+func (this *musicManager) FetchLoveList(userId int) ([]*element.MusicInfo, error) {
+	musicList, err := model.MusicModelInstance().FetchLoveList(userId)
+	if err != nil {
+		return nil, err
+	}
+	var retMusicList []*element.MusicInfo = nil
+	for _, music := range musicList {
+		switch music.LoveDegree {
 		case element.LoveDegreeNone:
-			retMusicList = append(retMusicList, music)
+			retMusicList = append(retMusicList, music.MusicInfo)
 		case element.LoveDegreeHate:
 		case element.LoveDegreeLike:
 			music.IsLoveMusic = true
-			retMusicList = append(retMusicList, music)
+			retMusicList = append(retMusicList, music.MusicInfo)
 		}
 	}
-	return musicList
+	return retMusicList, nil
 }
 
-func (this *musicManager) SearchMusic(keyword string) ([]*element.MusicInfo, error) {
+func (this *musicManager) SearchMusic(userId int, keyword string) ([]*element.MusicInfo, error) {
 	this.palyer = player.BaiduMusicPlayerInstance()
 	musicList, err := this.palyer.SearchMusic(keyword)
 	if err == nil && len(musicList) != 0 {
 		this.SaveMusicList(musicList)
+		for _, music := range musicList {
+			loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
+			if err != nil {
+				fmt.Println("FetchMusicList Error: ", err)
+				return nil, err
+			}
+			switch loveDegree {
+			case element.LoveDegreeLike:
+				fmt.Println("heh")
+				music.IsLoveMusic = true
+			}
+		}
+		return musicList, nil
 	}
-	for _, music := range musicList {
-		fmt.Printf("id: %d\n", music.MusicId)
-		fmt.Printf("name: %s\n", music.MusicName)
-	}
-	return musicList, err
+	return nil, err
 }
 
 func (this *musicManager) DownloadMusicList(musicList []*element.MusicInfo) {
@@ -155,7 +196,7 @@ func (this *musicManager) DownloadMusic(musicId int, informationCallback FetchIn
 			fmt.Println("Download Success!")
 			// 下载完成，将文件拷贝到本地目录，然后删除缓存目录
 			// musicInfo.MusicPath = musicInfo.DownloadPath
-			localPath := fmt.Sprintf("%s/resource/%s/", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.MusicUUID)
+			localPath := fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.MusicUUID)
 			err := cache.CacheManagerInstance().MoveCacheFile(downloadInfo.DownloadPath, localPath)
 			if err != nil {
 				fmt.Println("Save Error: ", err)

@@ -108,6 +108,10 @@ func (this *downloadManager) readNetworkFileUsingCallback(url string, downloadPa
 		callback(nil, err, &stopDownload)
 		return err
 	}
+	if resp.StatusCode >= 400 {
+		err = errors.New(fmt.Sprintf("download with http code: %d", resp.StatusCode))
+		return err
+	}
 	contentLength, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err == nil {
 		fetchCallback(contentLength)
