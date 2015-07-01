@@ -24,7 +24,8 @@ const (
 	DownloadTypeSingle
 )
 
-const MaxDownloadQueue = 3 // 最多可以支持3个携程同时下载
+const DownloadRetryCount = 3 // 下载失败可重试3次
+const MaxDownloadQueue = 3   // 最多可以支持3个携程同时下载
 const HttpReadSize = 4 * 1024 * 1024
 
 type DownloadElement struct {
@@ -70,29 +71,42 @@ func (this *downloadManager) AddDownloadInfoIntoQueue(downloadInfo *DownloadElem
 }
 
 func (this *downloadManager) readNetworkFile(url string, filePath string) error {
-	out, err := os.Create(filePath)
-	if err != nil {
-		fmt.Println("download create error: ", err)
-		return err
+	var currentRetryCount int = 0
+	for currentRetryCount < DownloadRetryCount {
+		currentRetryCount++
+		out, err := os.Create(filePath)
+		if err != nil {
+			fmt.Println("download create error: ", err)
+			return err
+		}
+		defer out.Close()
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Println("download get error: ", err)
+			if currentRetryCount > DownloadRetryCount {
+				return err
+			} else {
+				continue
+			}
+		}
+		defer resp.Body.Close()
+		pix, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println("download readall error: ", err)
+			if currentRetryCount > DownloadRetryCount {
+				return err
+			} else {
+				continue
+			}
+		}
+		size, err := out.Write(pix)
+		if err != nil || size == 0 {
+			fmt.Println("download copy error: ", err)
+			return err
+		}
+		return nil
 	}
-	defer out.Close()
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println("download get error: ", err)
-		return err
-	}
-	defer resp.Body.Close()
-	pix, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("download readall error: ", err)
-		return err
-	}
-	size, err := out.Write(pix)
-	if err != nil || size == 0 {
-		fmt.Println("download copy error: ", err)
-		return err
-	}
-	return nil
+	return errors.New("download failed!")
 }
 
 func (this *downloadManager) readNetworkFileUsingCallback(url string, downloadPath string, fetchCallback FetchInformationCallback, callback DownloadProgressCallback) error {
@@ -137,6 +151,7 @@ func (this *downloadManager) readNetworkFileUsingCallback(url string, downloadPa
 		} else if err != nil || size == 0 {
 			callback(nil, err, &stopDownload)
 			if err != nil {
+				fmt.Println("download Error: ", err)
 				hasError = true
 			}
 			break
