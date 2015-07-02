@@ -34,6 +34,7 @@ func (this *musicModel) SaveMusic(musicInfo *element.MusicInfo) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer stmt.Close()
 	result, err := stmt.Exec(musicInfo.MusicName, musicInfo.MusicAuthor, musicInfo.AlbumName, musicInfo.MusicTime, musicInfo.SourceType)
 	if err != nil {
 		return 0, err
@@ -63,6 +64,7 @@ func (this *musicModel) UpdateMusic(musicInfo *element.MusicInfo) error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 	_, err = stmt.Exec(musicInfo.MusicName, musicInfo.MusicAuthor, musicInfo.AlbumName, musicInfo.MusicUUID,
 		musicInfo.MusicTime, musicInfo.SourceType, musicInfo.MusicId)
 	if err != nil {
@@ -88,6 +90,7 @@ func (this *musicModel) ChangeSourceType(srcType, dstType int, musicInfo *elemen
 		if err != nil {
 			return err
 		}
+		defer stmt.Close()
 		_, err = stmt.Exec(dstType, musicInfo.MusicId)
 		if err != nil {
 			return err
@@ -141,16 +144,16 @@ func (this *musicModel) FetchRandomList(count int) ([]*element.MusicInfo, error)
 		if err != nil {
 			fmt.Println("查询失败: ", err)
 			return nil, err
-		} else {
-			if rows.Next() {
-				var musicId int
-				rows.Scan(&musicId)
-				musicInfo, err := this.QueryMusicById(musicId)
-				if err != nil {
-					return nil, err
-				}
-				musicList = append(musicList, musicInfo)
+		}
+		defer rows.Close()
+		if rows.Next() {
+			var musicId int
+			rows.Scan(&musicId)
+			musicInfo, err := this.QueryMusicById(musicId)
+			if err != nil {
+				return nil, err
 			}
+			musicList = append(musicList, musicInfo)
 		}
 	}
 	return musicList, nil
@@ -167,6 +170,7 @@ func (this *musicModel) GetMusicCount() (int, error) {
 		fmt.Println(err)
 		return 0, errors.New("查询失败")
 	}
+	defer rows.Close()
 	if rows.Next() {
 		var count int
 		rows.Scan(&count)
@@ -186,6 +190,7 @@ func (this *musicModel) FetchLoveList(userid int) ([]*element.LoveMusicInfo, err
 		fmt.Println(err)
 		return nil, errors.New("查询失败")
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var info *element.LoveMusicInfo = &element.LoveMusicInfo{}
 		var musicId, loveTime, degree int
@@ -214,6 +219,7 @@ func (this *musicModel) FetchListenList(userid int) ([]*element.ListenMusicInfo,
 		fmt.Println(err)
 		return nil, errors.New("查询失败")
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var info *element.ListenMusicInfo = &element.ListenMusicInfo{}
 		var musicId, listenTimes int
@@ -240,12 +246,14 @@ func (this *musicModel) LoveMusic(userId int, musicId int, degree int) error {
 		fmt.Println(err)
 		return err
 	}
+	defer rows.Close()
 	if rows.Next() {
 		if degree == 0 {
 			stmt, err := DatabaseInstance().DB.Prepare("delete from lovelist where userid = ? and musicid = ?")
 			if err != nil {
 				return err
 			}
+			defer stmt.Close()
 			stmt.Exec(userId, musicId)
 		} else {
 			var currentTime = time.Now().Unix()
@@ -261,6 +269,7 @@ func (this *musicModel) LoveMusic(userId int, musicId int, degree int) error {
 		if err != nil {
 			return err
 		}
+		defer stmt.Close()
 		stmt.Exec(userId, musicId, currentTime, degree)
 	}
 	return nil
@@ -276,12 +285,14 @@ func (this *musicModel) ListenMusic(userId int, musicId int) error {
 		fmt.Println(err)
 		return err
 	}
+	defer rows.Close()
 	if rows.Next() {
 		// 数据库中已经存在记录，times增加1
 		stmt, err := DatabaseInstance().DB.Prepare("update listenlist set times = times + 1 where userid = ? and musicid = ?")
 		if err != nil {
 			return err
 		}
+		defer stmt.Close()
 		stmt.Exec(userId, musicId)
 	} else {
 		// 数据库中不存在记录，插入
@@ -289,6 +300,7 @@ func (this *musicModel) ListenMusic(userId int, musicId int) error {
 		if err != nil {
 			return err
 		}
+		defer stmt.Close()
 		stmt.Exec(userId, musicId, 1)
 	}
 	return nil
@@ -303,6 +315,7 @@ func (this *musicModel) CheckMusicIsExistByNameAndAuthor(musicName string, autho
 	if err != nil {
 		return false, 0, err
 	}
+	defer rows.Close()
 	if rows.Next() {
 		var musicId int
 		rows.Scan(&musicId)
@@ -320,6 +333,7 @@ func (this *musicModel) CheckMusicIsExist(musicId int) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	defer rows.Close()
 	if rows.Next() {
 		return true, nil
 	}
@@ -335,6 +349,7 @@ func (this *musicModel) GetMusicLoveDegree(userId, musicId int) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer rows.Close()
 	if rows.Next() {
 		var loveDegree int
 		err = rows.Scan(&loveDegree)
@@ -356,6 +371,7 @@ func (this *musicModel) QueryMusicById(musicId int) (*element.MusicInfo, error) 
 		fmt.Println(err)
 		return nil, errors.New("查询失败")
 	}
+	defer rows.Close()
 	if rows.Next() {
 		var musicInfo *element.MusicInfo = &element.MusicInfo{}
 		rows.Scan(&musicInfo.MusicName, &musicInfo.MusicAuthor, &musicInfo.AlbumName, &musicInfo.MusicTime, &musicInfo.SourceType)
@@ -385,6 +401,7 @@ func (this *musicModel) SearchMusic(searchString string) ([]*element.MusicInfo, 
 		fmt.Println(err)
 		return nil, err
 	}
+	defer rows.Close()
 	var musicList []*element.MusicInfo
 	for rows.Next() {
 		var musicInfo *element.MusicInfo = &element.MusicInfo{}

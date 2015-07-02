@@ -29,6 +29,7 @@ func (this *accountModel) Register(username string, password string, sex string,
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 	stmt.Exec(username, password, sex, age, registerTime)
 	return nil
 }
@@ -43,6 +44,7 @@ func (this *accountModel) CheckUserIsExist(username string) (bool, error) {
 		fmt.Println(err)
 		return false, errors.New("查询失败:")
 	}
+	defer rows.Close()
 	if rows.Next() {
 		return true, nil
 	}
@@ -59,6 +61,7 @@ func (this *accountModel) CheckUserAndPassword(username string, password string)
 		fmt.Println(err)
 		return 0, false, errors.New("查询失败")
 	}
+	defer rows.Close()
 	if rows.Next() {
 		var userid int
 		rows.Scan(&userid)

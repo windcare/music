@@ -22,6 +22,7 @@ func MyMusicModelInstance() *myMusicModel {
 
 func (this *myMusicModel) InsertMusic(musicInfo *element.MusicInfo) (int, error) {
 	stmt, err := DatabaseInstance().DB.Prepare("insert into localmusic(musicid, path) VALUES(?, ?)")
+	defer stmt.Close()
 	_, err = stmt.Exec(musicInfo.MusicId, musicInfo.MusicUUID)
 	return musicInfo.MusicId, err
 }
@@ -31,6 +32,7 @@ func (this *myMusicModel) FetchMusicInfo(musicInfo *element.MusicInfo) error {
 	if err != nil {
 		return err
 	}
+	defer rows.Close()
 	if rows.Next() {
 		err := rows.Scan(&musicInfo.MusicUUID)
 		if err != nil {
@@ -48,6 +50,7 @@ func (this *myMusicModel) FetchMusicInfo(musicInfo *element.MusicInfo) error {
 
 func (this *myMusicModel) DeleteMusic(musicId int) error {
 	stmt, err := DatabaseInstance().DB.Prepare("delete from localmusic where musicid = ?")
+	defer stmt.Close()
 	_, err = stmt.Exec(musicId)
 	return err
 }
