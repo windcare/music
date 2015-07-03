@@ -143,6 +143,10 @@ static void *MMAudioCoreBufferingRatioContext = &MMAudioCoreBufferingRatioContex
     dispatch_async(dispatch_get_main_queue(), ^{
         [self removeKVOsIfNeeded];
         self.streamer = [DOUAudioStreamer streamerWithAudioFile:music];
+        __weak typeof(self) weakSelf = self;
+        self.streamer.downloadCompleteBlock = ^{
+            [weakSelf.delegate onDownloadComplete];
+        };
         [self addKVOs];
         [self.streamer play];
     });
@@ -178,6 +182,14 @@ static void *MMAudioCoreBufferingRatioContext = &MMAudioCoreBufferingRatioContex
 
 - (NSInteger)getTotalTime {
     return self.streamer.duration;
+}
+
+- (NSURL *)getCacheFilePath {
+  return self.streamer.cachedURL;
+}
+
+- (BOOL)isPlaying {
+    return self.streamer.status == DOUAudioStreamerPlaying;
 }
 
 @end

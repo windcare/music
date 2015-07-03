@@ -28,8 +28,6 @@ static NSImage *defaultDisk;
     CVDisplayLinkRef displayLinkRef;
 }
 
-@property (nonatomic, strong) XMSong *song;
-
 @property (nonatomic, assign) CGFloat coverWidth;
 @property (nonatomic, strong) CALayer *cropContainer;
 @property (nonatomic, strong) CALayer *diskContainer;
@@ -210,33 +208,6 @@ static NSImage *defaultDisk;
 
 #pragma mark - Hide/Show Disk
 
-//- (void)changeSong:(XMSong *)song {
-//    if (self.song.Id == song.Id) {
-//        return;
-//    }
-//    
-//    [self stopRotating];
-//    
-//    self.song = song;
-//    
-//    if (self.style == XMCircularProgressIndicatorStyleCircle) {
-//        [self setSongCoverWithSong:song];
-//        return;
-//    }
-//    
-//    if (![song.logoUrl.largeURL isEqual:self.logoURL]) {
-//        [CATransaction setCompletionBlock:nil];
-//        [CATransaction begin];
-//        [CATransaction setCompletionBlock:^{
-//            [self setDefaultSongCover];
-//            [self setSongCoverWithSong:song];
-//            [self showDisk];
-//        }];
-//        [self hideDisk];
-//        [CATransaction commit];
-//    }
-//}
-
 
 - (void)hideDisk {
     self.diskContainer.position = CGPointMake(
@@ -253,38 +224,6 @@ static NSImage *defaultDisk;
 - (void)setDefaultSongCover {
     [self setSongCover:defaultDisk];
 }
-
-//
-//- (void)setSongCoverWithSong:(XMSong *)song {
-//    if (song.logoUrl) {
-//        self.logoURL = song.logoUrl.largeURL;
-//        [self loadHTTPCoverWithSong:song];
-//    } else {
-//        [self loadiTunesCoverWithSong:song];
-//    }
-//}
-//
-//
-//- (void)loadiTunesCoverWithSong:(XMSong *)song {
-//    [self setSongCover:defaultDisk];
-//    [[NSImageView alloc] setiTunesImageWithSong:song defaultImage:defaultDisk success:^(NSImage *image) {
-//        [self setSongCover:image];
-//    } failure:^(NSError *error) {
-//        //
-//    }];
-//}
-//
-//
-//- (void)loadHTTPCoverWithSong:(XMSong *)song {
-//    [self setSongCover:defaultDisk];
-//    NSURL *imageURL = (self.shouldLoadOriginCover && XMUserConfig.isUseHighQuality) ? song.logoUrl.originURL : song.logoUrl.largeURL;
-//    [NSImageView fetchImageWithURL:imageURL defaultImage:defaultDisk completion:^(NSImage *image, NSError *error) {
-//        if (image) {
-//            [self setSongCover:image];
-//        }
-//    }];
-//}
-
 
 - (void)setSongCover:(NSImage *)songCover {
     if (!songCover) {

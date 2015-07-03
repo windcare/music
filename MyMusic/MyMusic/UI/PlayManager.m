@@ -16,6 +16,7 @@
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, strong) MyPlayer *player;
 @property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, strong) MusicInfo *currentMusic;
 
 @end
 
@@ -53,7 +54,17 @@
     self.currentIndex = 0;
 }
 
+- (void)deleteMusic:(MusicInfo *)musicInfo {
+    [self.musicList enumerateObjectsUsingBlock:^(MusicInfo *info, NSUInteger idx, BOOL *stop) {
+        if (info.musicId == musicInfo.musicId) {
+            [self.musicList removeObject:info];
+            *stop = YES;
+        }
+    }];
+}
+
 - (void)playMusic:(MusicInfo *)musicInfo {
+    self.currentMusic = musicInfo;
     [self.musicList enumerateObjectsUsingBlock:^(MusicInfo *info, NSUInteger idx, BOOL *stop) {
         if (info.musicId == musicInfo.musicId) {
             self.currentIndex = idx;
@@ -69,6 +80,7 @@
             musicFile.audioFileURL = [NSURL URLWithString:path];
             [self.player play:musicFile]; 
             [self.controller startParserLyric:musicInfo];
+            [self.controller setLoveMusic:musicInfo.isMyLove];
         }
         else {
             
@@ -79,11 +91,21 @@
     }];
 }
 
+- (MusicInfo *)getCurrentMusic {
+    return self.currentMusic;
+}
+
+- (BOOL)isPlaying {
+    return [self.player isPlaying];
+}
+
 - (void)playNext {
     if (self.currentIndex + 1 < self.musicList.count) {
         self.currentIndex++;
         MusicInfo *musicInfo = self.musicList[self.currentIndex];
         [self playMusic:musicInfo];
+    } else {
+        [self.controller refreshMusicList];
     }
 }
 
@@ -106,8 +128,12 @@
     [self.player resume];
 }
 
-- (void)setProgress:(NSInteger)progress {
+- (void)setProgress:(NSTimeInterval)progress {
     [self.player setProgress:progress];
+}
+
+- (NSTimeInterval)getProgress {
+    return [self.player getProgress];
 }
 
 // play
@@ -127,6 +153,7 @@
 }
 
 - (void)onIdle {
+    [self.controller stopAnimation];
     [self stopTimer];
 }
 
@@ -138,11 +165,17 @@
 
 - (void)onError {
     [self stopTimer];
+    [self.controller stopAnimation];
+    [self playNext];
+}
+
+- (void)onDownloadComplete {
+    NSLog(@"downloadCompelte: %@", [self.player getCacheFilePath]);
 }
 
 - (void)startTimer {
     [self stopTimer];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.9
                                                   target:self
                                                 selector:@selector(handleMaxShowTimer:)
                                                 userInfo:nil

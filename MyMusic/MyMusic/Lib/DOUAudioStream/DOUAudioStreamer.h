@@ -19,6 +19,7 @@
 #import "DOUAudioFile.h"
 #import "DOUAudioFilePreprocessor.h"
 #import "DOUAudioAnalyzer+Default.h"
+#import "DOUAudioFileProvider.h"
 
 DOUAS_EXTERN NSString *const kDOUAudioStreamerErrorDomain;
 
@@ -70,6 +71,8 @@ typedef NS_ENUM(NSInteger, DOUAudioStreamerErrorCode) {
 @property (nonatomic, readonly) NSUInteger receivedLength;
 @property (nonatomic, readonly) NSUInteger downloadSpeed;
 @property (nonatomic, assign, readonly) double bufferingRatio;
+
+@property (nonatomic, strong) DOUAudioFileDownloadCompleteBlock downloadCompleteBlock;
 
 - (void)play;
 - (void)pause;

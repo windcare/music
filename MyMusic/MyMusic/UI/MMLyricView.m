@@ -16,8 +16,10 @@
 
 @property (nonatomic, weak) IBOutlet MMTableView *lyricView;
 @property (nonatomic, assign) BOOL hasError;
-@property (nonatomic, strong) NSArray *lyrics;
+@property (nonatomic, strong) MMLyric *lyric;
 @property (nonatomic, assign) NSInteger currentIndex;
+@property (nonatomic, assign) NSInteger retryCount;
+@property (nonatomic, weak) IBOutlet NSTextField *informationField;
 
 @end
 
@@ -32,31 +34,51 @@
 - (void)startPlayLyric:(MusicInfo *)music {
     [[MusicManager sharedManager] downloadLyric:music.musicId complete:^(int errorCode, NSString *path) {
         if (errorCode == 0) {
+            self.retryCount = 0;
             MusicLyricParser *parser = [[MusicLyricParser alloc] init];
             [parser parserFromFile:path];
-            self.lyrics = [parser getLyrics];
+            self.lyric = [parser getLyrics];
+            if (self.lyric.hasLyric) {
+                [self.informationField setHidden:YES];
+            } else {
+                [self.informationField setHidden:NO];
+            }
             self.currentIndex = 0;
             [self.lyricView reloadData];
         }
         else {
-            self.hasError = YES;
-            NSLog(@"无歌词");
+            if (errorCode < 0 && self.retryCount < 3) {
+                self.retryCount++;
+                NSLog(@"拉取歌曲，网络错误");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self performSelector:@selector(startPlayLyric:) withObject:music afterDelay:3];
+                });
+            } else {
+                [self.informationField setHidden:YES];
+                self.retryCount = 0;
+                self.lyric.hasLyric = YES;
+                self.lyric.lyrics = [NSArray array];
+                self.hasError = YES;
+                NSLog(@"无歌词");
+            }
         }
     }];
 }
 
 - (void)setProgress:(NSTimeInterval)progress {
-    NSInteger nowIndex = 0;
-    while (nowIndex + 1 <= self.lyrics.count) {
-        LyricElement *lyric = self.lyrics[nowIndex+ 1];
-        NSTimeInterval nextTime = lyric.currentTime;
-        if (progress < nextTime) {
-            if (nowIndex != self.currentIndex) {
-                [self scrollToIndex:nowIndex];
+    if (self.lyric.hasLyric && !self.lyric.isStaticLyric) {
+        NSInteger nowIndex = 0;
+        while (nowIndex + 1 < self.lyric.lyrics.count) {
+            LyricElement *lyric = self.lyric.lyrics[nowIndex+ 1];
+            NSTimeInterval nextTime = lyric.currentTime;
+            if (progress < nextTime) {
+                if (nowIndex != self.currentIndex) {
+                    [self scrollToIndex:nowIndex];
+                }
+                break;
             }
-            break;
+            nowIndex++;
         }
-        nowIndex++;
     }
 }
 
@@ -70,13 +92,13 @@
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return self.lyrics.count;
+    return self.lyric.lyrics.count;
 }
 
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     MMLyricTableCellView *cellView = [tableView makeViewWithIdentifier:[tableColumn identifier] owner:self];    
     [cellView unSelect];
-    LyricElement *element = self.lyrics[row];
+    LyricElement *element = self.lyric.lyrics[row];
     [cellView setLyric:element.lyric];
     return cellView;
 }

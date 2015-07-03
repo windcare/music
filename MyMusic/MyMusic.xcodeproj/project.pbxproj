@@ -10,6 +10,12 @@
 		46196F271B3C197400230D5E /* MMSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 46196F261B3C197400230D5E /* MMSearchView.m */; };
 		4625AEC41B148E69006A7C51 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4625AEC21B148E69006A7C51 /* MainWindowController.m */; };
 		4625AEC51B148E69006A7C51 /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4625AEC31B148E69006A7C51 /* MainWindowController.xib */; };
+		4634BE901B45028E00B2E9EB /* MMChannelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE8F1B45028E00B2E9EB /* MMChannelCell.m */; };
+		4634BE941B45052C00B2E9EB /* MMChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE931B45052C00B2E9EB /* MMChannelView.m */; };
+		4634BE961B45306900B2E9EB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46F9023F1B43CE6F00D29755 /* Images.xcassets */; };
+		4634BE991B453A1400B2E9EB /* LoginMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE981B453A1400B2E9EB /* LoginMananger.m */; };
+		4634BE9C1B453AC300B2E9EB /* MusicDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE9B1B453AC300B2E9EB /* MusicDefaults.m */; };
+		4634BE9F1B45487500B2E9EB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4634BE9D1B45487500B2E9EB /* Main.storyboard */; };
 		463A22211B392EE4004559A1 /* NSImage+Rotate.m in Sources */ = {isa = PBXBuildFile; fileRef = 463A22201B392EE4004559A1 /* NSImage+Rotate.m */; };
 		463A22241B39338D004559A1 /* MMSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 463A22231B39338D004559A1 /* MMSlider.m */; };
 		463A22281B393418004559A1 /* NSImage+RBLResizableImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 463A22271B393418004559A1 /* NSImage+RBLResizableImageAdditions.m */; };
@@ -20,8 +26,6 @@
 		463A223C1B397809004559A1 /* MMTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 463A223B1B397809004559A1 /* MMTableCellView.m */; };
 		4649BC951B04C52F002D09F5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BC941B04C52F002D09F5 /* AppDelegate.m */; };
 		4649BC971B04C52F002D09F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BC961B04C52F002D09F5 /* main.m */; };
-		4649BC9C1B04C52F002D09F5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4649BC9B1B04C52F002D09F5 /* Images.xcassets */; };
-		4649BC9F1B04C52F002D09F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4649BC9D1B04C52F002D09F5 /* Main.storyboard */; };
 		4649BCAB1B04C530002D09F5 /* MyMusicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BCAA1B04C530002D09F5 /* MyMusicTests.m */; };
 		4649BCE01B04C5E8002D09F5 /* DOUAudioAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BCBA1B04C5E8002D09F5 /* DOUAudioAnalyzer.m */; };
 		4649BCE11B04C5E8002D09F5 /* DOUAudioAnalyzer+Default.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BCBC1B04C5E8002D09F5 /* DOUAudioAnalyzer+Default.m */; };
@@ -68,6 +72,7 @@
 		46C0005A1B060F170087D8E7 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C000511B060F170087D8E7 /* AFURLSessionManager.m */; };
 		46C0FF481B05864C0087D8E7 /* MMWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C0FF471B05864C0087D8E7 /* MMWindow.m */; };
 		46C0FF4B1B0586D80087D8E7 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C0FF4A1B0586D80087D8E7 /* LoginViewController.m */; };
+		46F902401B43CE6F00D29755 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46F9023F1B43CE6F00D29755 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +91,16 @@
 		4625AEC11B148E69006A7C51 /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainWindowController.h; path = UI/MainWindowController.h; sourceTree = "<group>"; };
 		4625AEC21B148E69006A7C51 /* MainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainWindowController.m; path = UI/MainWindowController.m; sourceTree = "<group>"; };
 		4625AEC31B148E69006A7C51 /* MainWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindowController.xib; path = UI/MainWindowController.xib; sourceTree = "<group>"; };
+		4634BE8E1B45028E00B2E9EB /* MMChannelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMChannelCell.h; path = UI/MMChannelCell.h; sourceTree = "<group>"; };
+		4634BE8F1B45028E00B2E9EB /* MMChannelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMChannelCell.m; path = UI/MMChannelCell.m; sourceTree = "<group>"; };
+		4634BE921B45052C00B2E9EB /* MMChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMChannelView.h; path = UI/MMChannelView.h; sourceTree = "<group>"; };
+		4634BE931B45052C00B2E9EB /* MMChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMChannelView.m; path = UI/MMChannelView.m; sourceTree = "<group>"; };
+		4634BE951B45123B00B2E9EB /* MMMusicChannel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MMMusicChannel.h; path = Core/MMMusicChannel.h; sourceTree = "<group>"; };
+		4634BE971B453A1400B2E9EB /* LoginMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginMananger.h; path = Core/LoginMananger.h; sourceTree = "<group>"; };
+		4634BE981B453A1400B2E9EB /* LoginMananger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginMananger.m; path = Core/LoginMananger.m; sourceTree = "<group>"; };
+		4634BE9A1B453AC300B2E9EB /* MusicDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MusicDefaults.h; path = Core/MusicDefaults.h; sourceTree = "<group>"; };
+		4634BE9B1B453AC300B2E9EB /* MusicDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MusicDefaults.m; path = Core/MusicDefaults.m; sourceTree = "<group>"; };
+		4634BE9E1B45487500B2E9EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		463A221F1B392EE4004559A1 /* NSImage+Rotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSImage+Rotate.h"; path = "Catagories/NSImage+Rotate.h"; sourceTree = "<group>"; };
 		463A22201B392EE4004559A1 /* NSImage+Rotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSImage+Rotate.m"; path = "Catagories/NSImage+Rotate.m"; sourceTree = "<group>"; };
 		463A22221B39338D004559A1 /* MMSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMSlider.h; path = UI/MMSlider.h; sourceTree = "<group>"; };
@@ -107,8 +122,6 @@
 		4649BC931B04C52F002D09F5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4649BC941B04C52F002D09F5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		4649BC961B04C52F002D09F5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		4649BC9B1B04C52F002D09F5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		4649BC9E1B04C52F002D09F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4649BCA41B04C52F002D09F5 /* MyMusicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyMusicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4649BCA91B04C52F002D09F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4649BCAA1B04C530002D09F5 /* MyMusicTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyMusicTests.m; sourceTree = "<group>"; };
@@ -206,6 +219,7 @@
 		46C0FF471B05864C0087D8E7 /* MMWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMWindow.m; path = UI/MMWindow.m; sourceTree = "<group>"; };
 		46C0FF491B0586D80087D8E7 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginViewController.h; path = UI/LoginViewController.h; sourceTree = "<group>"; };
 		46C0FF4A1B0586D80087D8E7 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginViewController.m; path = UI/LoginViewController.m; sourceTree = "<group>"; };
+		46F9023F1B43CE6F00D29755 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MyMusic/Images.xcassets; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +256,24 @@
 				469BC7491B3A63E7006448E5 /* NSString+Encode.m */,
 			);
 			name = Catagories;
+			sourceTree = "<group>";
+		};
+		4634BE8D1B45026F00B2E9EB /* MMChannelCell */ = {
+			isa = PBXGroup;
+			children = (
+				4634BE8E1B45028E00B2E9EB /* MMChannelCell.h */,
+				4634BE8F1B45028E00B2E9EB /* MMChannelCell.m */,
+			);
+			name = MMChannelCell;
+			sourceTree = "<group>";
+		};
+		4634BE911B4504FA00B2E9EB /* MMChannelView */ = {
+			isa = PBXGroup;
+			children = (
+				4634BE921B45052C00B2E9EB /* MMChannelView.h */,
+				4634BE931B45052C00B2E9EB /* MMChannelView.m */,
+			);
+			name = MMChannelView;
 			sourceTree = "<group>";
 		};
 		463A22251B393399004559A1 /* MMSlider */ = {
@@ -300,7 +332,6 @@
 				4649BCF21B04C60C002D09F5 /* Player */,
 				4649BC931B04C52F002D09F5 /* AppDelegate.h */,
 				4649BC941B04C52F002D09F5 /* AppDelegate.m */,
-				4649BC9B1B04C52F002D09F5 /* Images.xcassets */,
 				4649BC911B04C52F002D09F5 /* Supporting Files */,
 			);
 			path = MyMusic;
@@ -309,6 +340,7 @@
 		4649BC911B04C52F002D09F5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				46F9023F1B43CE6F00D29755 /* Images.xcassets */,
 				4649BC921B04C52F002D09F5 /* Info.plist */,
 				4649BC961B04C52F002D09F5 /* main.m */,
 			);
@@ -461,6 +493,11 @@
 				469BC74C1B3A76BB006448E5 /* MusicInfo.m */,
 				469BC74E1B3A8364006448E5 /* MusicCache.h */,
 				469BC74F1B3A8365006448E5 /* MusicCache.m */,
+				4634BE951B45123B00B2E9EB /* MMMusicChannel.h */,
+				4634BE971B453A1400B2E9EB /* LoginMananger.h */,
+				4634BE981B453A1400B2E9EB /* LoginMananger.m */,
+				4634BE9A1B453AC300B2E9EB /* MusicDefaults.h */,
+				4634BE9B1B453AC300B2E9EB /* MusicDefaults.m */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -494,6 +531,8 @@
 		46C0FF441B0586030087D8E7 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				4634BE911B4504FA00B2E9EB /* MMChannelView */,
+				4634BE8D1B45026F00B2E9EB /* MMChannelCell */,
 				468E5D501B3D352A00CD6950 /* MMLyric */,
 				468E5D4F1B3D1A3500CD6950 /* MMSearch */,
 				469BC7541B3AA4B3006448E5 /* MMRotatedImage */,
@@ -506,7 +545,7 @@
 				4625AEC31B148E69006A7C51 /* MainWindowController.xib */,
 				46C0FF491B0586D80087D8E7 /* LoginViewController.h */,
 				46C0FF4A1B0586D80087D8E7 /* LoginViewController.m */,
-				4649BC9D1B04C52F002D09F5 /* Main.storyboard */,
+				4634BE9D1B45487500B2E9EB /* Main.storyboard */,
 				463A22251B393399004559A1 /* MMSlider */,
 				46736B191B16AFB7005DA9D5 /* MMWindowController */,
 				46736B181B16AFB1005DA9D5 /* MMView */,
@@ -606,9 +645,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4649BC9C1B04C52F002D09F5 /* Images.xcassets in Resources */,
+				4634BE9F1B45487500B2E9EB /* Main.storyboard in Resources */,
+				4634BE961B45306900B2E9EB /* Images.xcassets in Resources */,
 				4625AEC51B148E69006A7C51 /* MainWindowController.xib in Resources */,
-				4649BC9F1B04C52F002D09F5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +655,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46F902401B43CE6F00D29755 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,12 +687,15 @@
 				46C000571B060F170087D8E7 /* AFURLConnectionOperation.m in Sources */,
 				4625AEC41B148E69006A7C51 /* MainWindowController.m in Sources */,
 				46C000531B060F170087D8E7 /* AFHTTPRequestOperationManager.m in Sources */,
+				4634BE991B453A1400B2E9EB /* LoginMananger.m in Sources */,
 				4649BCE91B04C5E8002D09F5 /* DOUAudioRenderer.m in Sources */,
 				463A223C1B397809004559A1 /* MMTableCellView.m in Sources */,
+				4634BE901B45028E00B2E9EB /* MMChannelCell.m in Sources */,
 				4649BCE81B04C5E8002D09F5 /* DOUAudioPlaybackItem.m in Sources */,
 				469BC74A1B3A63E7006448E5 /* NSString+Encode.m in Sources */,
 				4649BCEF1B04C5E8002D09F5 /* DOUMPMediaLibraryAssetLoader.m in Sources */,
 				46C0003B1B060E250087D8E7 /* MusicManager.m in Sources */,
+				4634BE941B45052C00B2E9EB /* MMChannelView.m in Sources */,
 				463A22241B39338D004559A1 /* MMSlider.m in Sources */,
 				4649BCE21B04C5E8002D09F5 /* DOUAudioDecoder.m in Sources */,
 				4649BCEC1B04C5E8002D09F5 /* DOUAudioStreamer+Options.m in Sources */,
@@ -662,6 +705,7 @@
 				46C000561B060F170087D8E7 /* AFSecurityPolicy.m in Sources */,
 				4649BCEB1B04C5E8002D09F5 /* DOUAudioStreamer.m in Sources */,
 				46736B661B172BBA005DA9D5 /* MainMenuController.m in Sources */,
+				4634BE9C1B453AC300B2E9EB /* MusicDefaults.m in Sources */,
 				46C0FF481B05864C0087D8E7 /* MMWindow.m in Sources */,
 				46C000551B060F170087D8E7 /* AFNetworkReachabilityManager.m in Sources */,
 				469BC74D1B3A76BB006448E5 /* MusicInfo.m in Sources */,
@@ -704,10 +748,10 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		4649BC9D1B04C52F002D09F5 /* Main.storyboard */ = {
+		4634BE9D1B45487500B2E9EB /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4649BC9E1B04C52F002D09F5 /* Base */,
+				4634BE9E1B45487500B2E9EB /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

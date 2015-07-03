@@ -18,6 +18,7 @@
 - (void)onIdle;
 - (void)onFinished;
 - (void)onError;
+- (void)onDownloadComplete;
 
 @end
 
@@ -34,5 +35,7 @@
 - (void)setProgress:(NSTimeInterval)progress;
 - (NSTimeInterval)getProgress;
 - (NSInteger)getTotalTime;
+- (NSURL *)getCacheFilePath;
+- (BOOL)isPlaying;
 
 @end

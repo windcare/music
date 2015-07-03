@@ -19,6 +19,7 @@
 #import "PlayManager.h"
 #import "MMSearchView.h"
 #import "MMLyricView.h"
+#import "MMChannelView.h"
 #import <QuartzCore/QuartzCore.h>
 
 static const CGFloat kWindowOriginYMargin = 30.0f;
@@ -28,7 +29,7 @@ static const CGFloat kWindowFullHeight = 500.0f;
 
 @interface MainWindowController () <MMSliderDelegate, NSControlTextEditingDelegate, MMSearchViewDelegate>
 
-@property (nonatomic, weak) IBOutlet NSView *view1;
+@property (nonatomic, weak) IBOutlet MMChannelView *channelView;
 @property (nonatomic, weak) IBOutlet NSView *view2;
 @property (nonatomic, weak) IBOutlet MMSlider *slider;
 @property (nonatomic, weak) IBOutlet MMTableView *tableView;
@@ -37,10 +38,11 @@ static const CGFloat kWindowFullHeight = 500.0f;
 @property (nonatomic, weak) IBOutlet NSTextField *timeField;
 @property (nonatomic, weak) IBOutlet NSView *playListView;
 @property (nonatomic, weak) IBOutlet NSTextField *searchField;
-@property (nonatomic, weak) IBOutlet NSView *leftPanelView;
 @property (nonatomic, weak) IBOutlet NSButton *playBtn;
 @property (nonatomic, weak) IBOutlet NSView *listView;
 @property (nonatomic, weak) IBOutlet MMLyricView *lyricView;
+@property (nonatomic, weak) IBOutlet NSButton *loveBtn;
+
 
 @property (nonatomic, assign) BOOL isFullScreen;
 @property (nonatomic, strong) NSArray *musicList;
@@ -68,16 +70,30 @@ static const CGFloat kWindowFullHeight = 500.0f;
     NSRect originRect = self.window.frame;
     originRect.size.height = kWindowOriginHeight;
     [self.window setFrame:originRect display:YES];
+    
     [self.slider setDelegate:self];
     self.slider.duration = 400.0;
+    
     [self.tableView setTarget:self];
     [self.tableView setDoubleAction:@selector(didDoubleClickFolderRow:)];
+    
     [PlayManager sharedManager].controller = self;
+    self.channelView.controller = self;
+    
     [self fetchMusic:MMMusicChannelChildren];
+    
     [self.searchView appendToView:self.window.contentView];
     self.searchView.delegate = self;
+    
     self.enableSetProgress = YES;
     self.lyricViewIsHide = YES;
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:NSApplicationWillResignActiveNotification 
+                                                      object:nil 
+                                                       queue:[NSOperationQueue mainQueue] 
+                                                  usingBlock:^(NSNotification *note) {
+         [self _hideWindow];
+     }];
 }
 
 + (MainWindowController *)sharedMainWindowController{
@@ -91,8 +107,8 @@ static const CGFloat kWindowFullHeight = 500.0f;
 }
 
 - (IBAction)test:(id)sender {
-    [(MMView *)self.view1 setBackgroundImage:[NSImage imageNamed:@"background"]];
-    [self pushView:self.view1 animated:YES];
+    [(MMView *)self.channelView setBackgroundImage:[NSImage imageNamed:@"background"]];
+    [self pushView:self.channelView animated:YES];
 }
 
 - (IBAction)showLyric:(id)sender {
@@ -105,8 +121,29 @@ static const CGFloat kWindowFullHeight = 500.0f;
     self.lyricViewIsHide = !self.lyricViewIsHide;
 }
 
-- (IBAction)test1:(id)sender {
-    [self popViewAnimated:YES];
+
+- (IBAction)loveMusic:(id)sender {
+    MusicInfo *playingMusic = [[PlayManager sharedManager] getCurrentMusic];
+    MMLoveMusicDegree degree = playingMusic.isMyLove ? MMLoveMusicDegreeNormal : MMLoveMusicDegreeLove;
+    [[MusicManager sharedManager] loveMusic:playingMusic.musicId loveDegree:degree complete:^(BOOL success) {
+        if (success) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                playingMusic.isMyLove = !playingMusic.isMyLove;
+                [self setLoveMusic:playingMusic.isMyLove];
+            });
+        }
+    }];
+}
+
+- (IBAction)deleteMusic:(id)sender {
+    MusicInfo *playingMusic = [[PlayManager sharedManager] getCurrentMusic];
+    [[MusicManager sharedManager] loveMusic:playingMusic.musicId loveDegree:MMLoveMusicDegreeHate complete:^(BOOL success) {
+        if (success) {
+            [[PlayManager sharedManager] playNext];
+            [[PlayManager sharedManager] deleteMusic:playingMusic];
+        }
+    }];
+
 }
 
 - (void)toggleWindow {
@@ -125,6 +162,10 @@ static const CGFloat kWindowFullHeight = 500.0f;
     [self.window setFrame:windowFrame display:YES];
     
     [(MMWindow *)self.window showWindowAndMakeItKeyWindow];
+    if ([[PlayManager sharedManager] isPlaying]) {
+        [self.coverImage startRotating];
+    }
+    [self setProgress:[[PlayManager sharedManager] getProgress]];
 }
 
 - (void)showSmallSearchView {
@@ -133,6 +174,7 @@ static const CGFloat kWindowFullHeight = 500.0f;
 
 - (void)_hideWindow {
     [self.window orderOut:nil];
+    [self.coverImage stopRotating];
 }
 
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
@@ -194,8 +236,12 @@ static const CGFloat kWindowFullHeight = 500.0f;
             [self.window.contentView addSubview:self.lyricView];
         }
         isFirst = NO;
+        [self.lyricView setHidden:NO];
+        [self.listView setHidden:NO];
     } else {
         self.isFullScreen = NO;
+        [self.lyricView setHidden:YES];
+        [self.listView setHidden:YES];
         windowFrame.origin.y += (kWindowFullHeight - kWindowOriginHeight);
         windowFrame.size.height = kWindowOriginHeight;
         [self.window setFrame:windowFrame display:YES animate:YES];
@@ -234,6 +280,7 @@ static const CGFloat kWindowFullHeight = 500.0f;
     listAnimation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut];
     [self.lyricView.layer addAnimation:lyricAnimation forKey:nil];
     [self.listView.layer addAnimation:listAnimation forKey:nil];
+    [self.lyricView setProgress:[[PlayManager sharedManager] getProgress]];
 }
 
 - (void)hideLyricView {
@@ -359,12 +406,16 @@ static const CGFloat kWindowFullHeight = 500.0f;
 }
 
 - (void)setProgress:(NSTimeInterval)progress {
-    if (self.enableSetProgress) {
-        self.slider.currentTime = progress;
+    if (self.window.isVisible) {
+        if (self.enableSetProgress) {
+            self.slider.currentTime = progress;
+        }
+        NSString *showTime = [NSString stringWithFormat:@"%ld:%02ld/%ld:%02ld", (NSInteger)progress / 60,  (NSInteger)progress % 60, (NSInteger)self.duration / 60, (NSInteger)self.duration % 60];
+        self.timeField.stringValue = showTime;
+        if (self.isshowTypeLyricShow) {
+            [self.lyricView setProgress:progress];
+        }
     }
-    NSString *showTime = [NSString stringWithFormat:@"%ld:%02ld/%ld:%02ld", (NSInteger)progress / 60,  (NSInteger)progress % 60, (NSInteger)self.duration / 60, (NSInteger)self.duration % 60];
-    self.timeField.stringValue = showTime;
-    [self.lyricView setProgress:progress];
 }
 
 - (void)setCover:(NSImage *)coverImage {
@@ -372,7 +423,9 @@ static const CGFloat kWindowFullHeight = 500.0f;
 }
 
 - (void)startAnimation {
-    [self.coverImage startRotating];
+    if (self.window.isVisible) {
+        [self.coverImage startRotating];
+    }
 }
 
 - (void)stopAnimation {
@@ -383,28 +436,39 @@ static const CGFloat kWindowFullHeight = 500.0f;
     [[PlayManager sharedManager] setVolumn:volumn];
 }
 
+- (void)setLoveMusic:(BOOL)isMyLove {
+    if (isMyLove) {
+        [self.loveBtn setImage:[NSImage imageNamed:@"player_btn_favorited_normal"]];
+    } else {
+        [self.loveBtn setImage:[NSImage imageNamed:@"player_btn_not_favorite_normal"]];
+    }
+}
+
+- (void)setMusicList:(NSArray *)musicList {
+    _musicList = musicList;
+    [[PlayManager sharedManager] setPlayMusicList:musicList];
+    [self.tableView reloadData];
+}
+
+- (void)refreshMusicList {
+    MMMusicChannel currentChannel = [self.channelView getCurrentChannel];
+    [self fetchMusic:currentChannel];
+}
+
 - (void)fetchMusic:(MMMusicChannel)channel {
     [[MusicManager sharedManager] fetchRandomListWithChannel:channel complete:^(int errorCode, NSArray *musicList) {
         if (errorCode == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.musicList = musicList;
-                [[PlayManager sharedManager] setPlayMusicList:musicList];
-                [self.tableView reloadData];
+                if (musicList.count == 0) {
+                    [self fetchMusic:channel];
+                } else {
+                    self.musicList = musicList;
+                    [[PlayManager sharedManager] setPlayMusicList:musicList];
+                    [self.tableView reloadData];
+                }
             });
         }
     }];
-}
-
-- (IBAction)hotMusic:(id)sender {
-    [self fetchMusic:MMMusicChannelHot];
-}
-
-- (IBAction)classicMusic:(id)sender {
-    [self fetchMusic:MMMusicChannelClassic];
-}
-
-- (IBAction)chineseVoice:(id)sender {
-    [self fetchMusic:MMMusicChannelChinaVioce];
 }
 
 @end

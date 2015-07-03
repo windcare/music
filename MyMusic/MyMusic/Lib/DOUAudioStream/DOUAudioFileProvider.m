@@ -39,6 +39,7 @@ static BOOL gLastProviderIsFinished = NO;
 @protected
   id <DOUAudioFile> _audioFile;
   DOUAudioFileProviderEventBlock _eventBlock;
+  DOUAudioFileDownloadCompleteBlock _completeBlock;
   NSString *_cachedPath;
   NSURL *_cachedURL;
   NSString *_mimeType;
@@ -269,6 +270,9 @@ static BOOL gLastProviderIsFinished = NO;
   }
 
   [self _invokeEventBlock];
+    if (_completeBlock) {
+        _completeBlock();
+    }
 }
 
 - (void)_requestDidReportProgress:(double)progress

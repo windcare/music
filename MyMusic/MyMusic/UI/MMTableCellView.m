@@ -16,7 +16,7 @@
 @property (nonatomic, weak) IBOutlet NSTextField *musicAuthor;
 @property (nonatomic, weak) IBOutlet NSTextField *time;
 @property (nonatomic, weak) IBOutlet NSImageView *musicCover;
-
+@property (nonatomic, assign) NSInteger retryCount; 
 @end
 
 @implementation MMTableCellView
@@ -25,8 +25,33 @@
     [[MusicManager sharedManager] downloadCoverImage:self.musicInfo.musicId complete:^(int errorCode, NSString *path) {
         if (errorCode == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.musicCover setImage:[[NSImage alloc] initWithContentsOfFile:path]];
+                NSImage *image = [[NSImage alloc] initWithContentsOfFile:path];
+                if (image == nil) {
+                    self.retryCount++;
+                    if (self.retryCount >= 3) {
+                        
+                    }
+                    else {
+                        [self performSelector:@selector(reloadView) withObject:nil afterDelay:1];
+                        NSLog(@"图片下载失败");
+                    }
+                } else {
+                    self.retryCount = 0;
+                    [self.musicCover setImage:[[NSImage alloc] initWithContentsOfFile:path]];
+                }
             });
+        }
+        else {
+            if (errorCode < 0 && self.retryCount < 3) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.retryCount++;
+                    [self performSelector:@selector(reloadView) withObject:nil afterDelay:1];
+                });
+            } else {
+                [self.musicCover setImage:[NSImage imageNamed:@"disk"]];
+                self.retryCount = 0;
+                NSLog(@"图片下载失败");
+            }
         }
     }];
     self.musicName.stringValue = self.musicInfo.musicName;

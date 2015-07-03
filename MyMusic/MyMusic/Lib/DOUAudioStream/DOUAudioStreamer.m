@@ -187,6 +187,11 @@ NSString *const kDOUAudioStreamerErrorDomain = @"com.douban.audio-streamer.error
   return [_fileProvider downloadSpeed];
 }
 
+- (void)setDownloadCompleteBlock:(DOUAudioFileDownloadCompleteBlock)downloadCompleteBlock {
+    _fileProvider.completeBlock = downloadCompleteBlock;
+    _downloadCompleteBlock = downloadCompleteBlock;
+}
+
 - (void)play
 {
   @synchronized(self) {

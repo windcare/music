@@ -19,7 +19,12 @@
 - (void)addPlayMusic:(MusicInfo *)musicInfo;
 - (void)addPlayMusicList:(NSArray *)musicInfos;
 - (void)setPlayMusicList:(NSArray *)musicInfos;
+- (void)deleteMusic:(MusicInfo *)musicInfo;
 - (void)playMusic:(MusicInfo *)musicInfo;
+
+- (MusicInfo *)getCurrentMusic;
+
+- (BOOL)isPlaying;
 
 - (void)playNext;
 
@@ -31,6 +36,8 @@
 
 - (void)play;
 
-- (void)setProgress:(NSInteger)progress;
+- (void)setProgress:(NSTimeInterval)progress;
+
+- (NSTimeInterval)getProgress;
 
 @end

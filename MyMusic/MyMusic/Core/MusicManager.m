@@ -8,14 +8,22 @@
 
 #import "MusicManager.h"
 #import "AFNetworking.h"
-#import "NSString+Encode.h"
 #import "MusicInfo.h"
 #import "MusicCache.h"
 
+//#define LOCAL_SERVER
+
+#ifdef LOCAL_SERVER
 static NSString * kHost = @"localhost:34321";
 static NSString * kAPIURLBase = @"http://localhost:34321/music";
 static NSString * kLoginURLBase = @"http://localhost:34321/account";
 static NSString * kDownloadURLBase = @"http://localhost:34321/message";
+#else
+static NSString * kHost = @"120.26.38.153:34321";
+static NSString * kAPIURLBase = @"http://120.26.38.153:3432/music";
+static NSString * kLoginURLBase = @"http://120.26.38.153:3432/account";
+static NSString * kDownloadURLBase = @"http://120.26.38.153:3432/message";
+#endif
 
 @interface MusicManager()
 
@@ -119,6 +127,7 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
                     info.musicAuthor = musicElement[@"artist"];
                     info.albumName = musicElement[@"albumname"];
                     info.duration = [musicElement[@"time"] integerValue];
+                    info.isMyLove = [musicElement[@"love"] boolValue];
                     [musicList addObject:info];
                 }];
             }
@@ -134,7 +143,36 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
 }
 
 - (void)fetchLoveMusicListWithCompletion:(void (^)(int errorCode, NSArray *musicList))completion {
+    NSURL *fetchLoveListURL = [NSURL URLWithString:[kAPIURLBase stringByAppendingString:@"?action=fetchLoveMusic"]];
     
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:fetchLoveListURL];
+    [self sendRequest:mutableRequest success:^(NSDictionary *response) {
+        NSLog(@"response: %@", response);
+        int errorCode = [response[@"code"] intValue];
+        if (errorCode == 0) {
+            NSArray *musicArr = response[@"param"][@"musicList"];
+            NSMutableArray *musicList = [NSMutableArray array];
+            if (musicArr) {
+                [musicArr enumerateObjectsUsingBlock:^(NSDictionary *musicElement, NSUInteger idx, BOOL *stop) {
+                    MusicInfo *info = [[MusicInfo alloc] init];
+                    info.musicId = [musicElement[@"id"] integerValue];
+                    info.musicName = musicElement[@"musicname"];
+                    info.musicAuthor = musicElement[@"artist"];
+                    info.albumName = musicElement[@"albumname"];
+                    info.duration = [musicElement[@"time"] integerValue];
+                    info.isMyLove = YES;
+                    [musicList addObject:info];
+                }];
+            }
+            completion(0, [musicList copy]);
+        }
+        else {
+            completion(errorCode, nil);
+        }
+    } failed:^(NSError *error) {
+        int errorCode = (int)error.code;
+        completion(errorCode, nil);
+    }];
 }
 
 - (void)fetchListenedMusicListWithCompletion:(void (^)(int errorCode, NSArray *musicList))completion {
@@ -145,8 +183,7 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
                password:(NSString *)password 
              completion:(void (^)(int errorCode))completion {
     NSURL *loginURL = [NSURL URLWithString:kLoginURLBase];
-    NSString *code = [[NSString stringWithFormat:@"%@%@", [password MD5], userName] MD5];
-    NSDictionary *jsonParam = @{@"action": @"login", @"param": @{@"username": userName, @"password": code}};
+    NSDictionary *jsonParam = @{@"action": @"login", @"param": @{@"username": userName, @"password": password}};
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonParam
                                                        options:NSJSONWritingPrettyPrinted
                                                          error:nil];
@@ -162,12 +199,14 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
             // 过期时间是创建时间的5小时
             self.expireTime = self.createTime + 5 * 60 * 60 * 1000;
             self.isLogin = YES;
+            completion(0);
         } else {
             self.isLogin = NO;
+            completion((int)errorCode);
             NSLog(@"LoginFailed: %ld", (long)errorCode);
         }
     } failed:^(NSError *error) {
-        
+        completion((int)error.code);
     }];
 }
 
@@ -190,6 +229,7 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
                     info.musicAuthor = musicElement[@"artist"];
                     info.albumName = musicElement[@"albumname"];
                     info.duration = [musicElement[@"time"] integerValue];
+                    info.isMyLove = [musicElement[@"love"] boolValue];
                     [musicList addObject:info];
                 }];
             }
@@ -213,8 +253,13 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
     operation.outputStream  = [NSOutputStream outputStreamToFileAtPath:path append:NO];  
     
     //已完成下载  
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {  
-        completion(0); 
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (operation.response.statusCode == 200) {
+            completion(0); 
+        }
+        else {
+            completion((int)operation.response.statusCode);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {  
         completion((int)error.code);
     }];  
@@ -235,7 +280,6 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
 }
 
 - (void)downloadCoverImage:(NSInteger)musicId complete:(void (^)(int errorCode, NSString *path))completion {
-    NSLog(@"cover: %ld", musicId);
     NSString *path = [[MusicCache sharedCache] getResourcePathWithMusicId:musicId resourceType:CacheResourceType_BigCover];
     if (path.length == 0) {
         NSString *urlBase = [NSString stringWithFormat:@"%@?action=downloadBigCover&musicId=%ld", kDownloadURLBase, musicId];
@@ -263,8 +307,23 @@ static NSString * kDownloadURLBase = @"http://localhost:34321/message";
     }
 }
 
-- (void)loveMusic:(NSInteger)musicId loveDegree:(NSInteger)degree {
-  
+- (void)loveMusic:(NSInteger)musicId 
+       loveDegree:(MMLoveMusicDegree)degree 
+         complete:(void (^)(BOOL))completion {
+    NSString *url = [NSString stringWithFormat:@"%@?action=loveMusic&musicId=%ld&degree=%ld", kAPIURLBase, musicId, degree];
+    NSURL *loveURL = [NSURL URLWithString:url];
+    
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:loveURL];
+    [self sendRequest:mutableRequest success:^(NSDictionary *response) {
+        if ([response[@"code"] integerValue] == 0) {
+            completion(YES);
+        }
+        else {
+            completion(NO);
+        }
+    } failed:^(NSError *error) {
+        completion(NO);
+    }];
 }
 
 @end

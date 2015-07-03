@@ -22,7 +22,9 @@
 - (void)setVolumn:(CGFloat)volumn;
 - (void)startAnimation;
 - (void)stopAnimation;
-
+- (void)setLoveMusic:(BOOL)isMyLove;
 - (void)toggleWindow;
+- (void)setMusicList:(NSArray *)musicList;
+- (void)refreshMusicList;
 
 @end

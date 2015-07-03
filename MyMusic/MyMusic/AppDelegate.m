@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MainMenuController.h"
-
+#import "LoginMananger.h"
 
 @interface AppDelegate ()
 
@@ -19,6 +19,13 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     [[MainMenuController sharedController] setMenuImage:@"logo"];
+    [[LoginMananger sharedManager] autoLoginWithComplete:^(BOOL success) {
+        if (!success) {
+            NSWindowController *windwoController = [[NSStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateControllerWithIdentifier:@"LoginWindow"];
+            [windwoController showWindow:nil];
+        }
+    }];
+    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

@@ -15,5 +15,6 @@
 @property (nonatomic, strong) NSString *musicAuthor;
 @property (nonatomic, strong) NSString *albumName;
 @property (nonatomic, assign) NSInteger duration;
+@property (nonatomic, assign) BOOL isMyLove;
 
 @end

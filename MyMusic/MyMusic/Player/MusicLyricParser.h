@@ -8,6 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+@interface MMLyric : NSObject
+
+@property (nonatomic, assign) BOOL isStaticLyric;
+@property (nonatomic, assign) BOOL hasLyric;
+
+@property (nonatomic, strong) NSArray *lyrics;
+
+@end
+
 @interface LyricElement : NSObject
 
 @property (nonatomic, assign) NSTimeInterval currentTime;
@@ -19,6 +28,6 @@
 @interface MusicLyricParser : NSObject
 
 - (void)parserFromFile:(NSString *)path;
-- (NSArray *)getLyrics;
+- (MMLyric *)getLyrics;
 
 @end

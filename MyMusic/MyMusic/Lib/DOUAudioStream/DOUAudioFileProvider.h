@@ -18,6 +18,7 @@
 #import "DOUAudioFile.h"
 
 typedef void (^DOUAudioFileProviderEventBlock)(void);
+typedef void (^DOUAudioFileDownloadCompleteBlock)(void);
 
 @interface DOUAudioFileProvider : NSObject
 
@@ -26,6 +27,7 @@ typedef void (^DOUAudioFileProviderEventBlock)(void);
 
 @property (nonatomic, readonly) id <DOUAudioFile> audioFile;
 @property (nonatomic, copy) DOUAudioFileProviderEventBlock eventBlock;
+@property (nonatomic, copy) DOUAudioFileDownloadCompleteBlock completeBlock;
 
 @property (nonatomic, readonly) NSString *cachedPath;
 @property (nonatomic, readonly) NSURL *cachedURL;

@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "MusicManager.h"
 #import "MainWindowController.h"
+#import "LoginMananger.h"
 
 @interface LoginViewController()
 
@@ -31,16 +32,8 @@
 }
 
 - (IBAction)login:(id)sender {
-    [[MusicManager sharedManager] loginByUserName:@"hello1" password:@"hello1" completion:^(int errorCode) {
-        NSLog(@"errorCode");
-    }];
-//    [[MainWindowController sharedMainWindowController] showWindow:nil];
-//    [[MainWindowController sharedMainWindowController] showWindowAndMakeItKeyWindow];
-}
-
-- (IBAction)fetchRandomList:(id)sender {
-    [[MusicManager sharedManager] fetchRandomListWithChannel:0 complete:^(int errorCode, NSArray *musicList) {
-        NSLog(@"%@", musicList);
+    [[LoginMananger sharedManager] loginWithUsername:@"hello1" password:@"hello1" complete:^(BOOL success) {
+        
     }];
 }
 

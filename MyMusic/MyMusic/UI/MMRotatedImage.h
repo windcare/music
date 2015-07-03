@@ -15,8 +15,6 @@ typedef enum {
 } XMCircularProgressIndicatorStyle;
 
 
-@class XMSong;
-
 @interface MMRotatedImage : NSControl
 
 @property (nonatomic, strong) NSImage *songCover;
@@ -31,7 +29,5 @@ typedef enum {
 
 - (void)startSpin:(BOOL)forward;
 - (void)stopSpin;
-
-- (void)changeSong:(XMSong *)song;
 
 @end

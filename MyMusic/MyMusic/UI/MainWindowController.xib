@@ -6,8 +6,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
             <connections>
+                <outlet property="channelView" destination="eWe-6V-feH" id="S08-Ez-bJL"/>
                 <outlet property="coverImage" destination="NkV-DH-azj" id="EdI-5v-D1e"/>
                 <outlet property="listView" destination="Fbc-4e-pGw" id="fsh-IS-Qh1"/>
+                <outlet property="loveBtn" destination="yPw-yA-Vsa" id="kSJ-Ig-bsM"/>
                 <outlet property="lyricView" destination="U9f-kK-oCP" id="Nac-B8-zcj"/>
                 <outlet property="musicName" destination="jRh-63-EKj" id="fce-Zq-bNv"/>
                 <outlet property="playBtn" destination="NaJ-VW-gW5" id="hoh-mm-r2i"/>
@@ -17,7 +19,6 @@
                 <outlet property="slider" destination="nEA-JN-Uqm" id="S73-dL-4Mn"/>
                 <outlet property="tableView" destination="Yld-I8-Tbc" id="cW3-Rv-D0T"/>
                 <outlet property="timeField" destination="XN1-pD-SUi" id="zbY-yX-jCX"/>
-                <outlet property="view1" destination="eWe-6V-feH" id="GmU-xi-L9c"/>
                 <outlet property="view2" destination="EfF-xm-PL3" id="PLh-KG-gZW"/>
                 <outlet property="window" destination="KKL-uk-CDx" id="pbV-CZ-d5M"/>
             </connections>
@@ -83,6 +84,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="loveMusic:" target="-2" id="nPK-Vu-c1H"/>
+                        </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XN1-pD-SUi">
                         <rect key="frame" x="346" y="400" width="58" height="11"/>
@@ -93,13 +97,13 @@
                         </textFieldCell>
                     </textField>
                     <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fbc-4e-pGw">
-                        <rect key="frame" x="0.0" y="25" width="400" height="355"/>
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="380"/>
                         <subviews>
                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EGu-fx-4BJ">
-                                <rect key="frame" x="9" y="5" width="382" height="320"/>
+                                <rect key="frame" x="9" y="0.0" width="382" height="350"/>
                                 <subviews>
                                     <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u89-ap-3Mv">
-                                        <rect key="frame" x="0.0" y="0.0" width="382" height="320"/>
+                                        <rect key="frame" x="0.0" y="5" width="382" height="345"/>
                                         <clipView key="contentView" misplaced="YES" drawsBackground="NO" copiesOnScroll="NO" id="mCG-ms-zH1">
                                             <rect key="frame" x="1" y="0.0" width="238" height="134"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -130,7 +134,7 @@
                                                                     <subviews>
                                                                         <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kNY-7V-t3f">
                                                                             <rect key="frame" x="4" y="3" width="32" height="32"/>
-                                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="logo" id="m5J-3r-PNw"/>
+                                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="disk" id="m5J-3r-PNw"/>
                                                                         </imageView>
                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pWY-gB-9RX">
                                                                             <rect key="frame" x="44" y="1" width="79" height="17"/>
@@ -187,7 +191,7 @@
                                 </subviews>
                             </customView>
                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4aA-eo-5kO">
-                                <rect key="frame" x="41" y="328" width="221" height="22"/>
+                                <rect key="frame" x="41" y="353" width="221" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" focusRingType="none" baseWritingDirection="leftToRight" placeholderString="搜索歌曲，歌手，专辑" id="gcl-xB-68q">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" red="0.0" green="0.70309768360000002" blue="0.25139313810000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -198,9 +202,29 @@
                                 </connections>
                             </textField>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mo2-CR-UvT">
-                                <rect key="frame" x="14" y="327" width="22" height="24"/>
+                                <rect key="frame" x="14" y="352" width="22" height="24"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="search_icon" id="gEE-kl-uv7"/>
                             </imageView>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2wk-bX-f07">
+                                <rect key="frame" x="312" y="354" width="26" height="21"/>
+                                <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="lyric_btn_normal" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="4wE-XI-3cm">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="showLyric:" target="-2" id="g7H-I5-h30"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pCs-2Q-AjA">
+                                <rect key="frame" x="344" y="354" width="41" height="21"/>
+                                <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="channel" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="upi-L6-J2t">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="test:" target="-2" id="rgQ-DT-Owf"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </customView>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cv4-Iq-BKn">
@@ -213,154 +237,88 @@
                             <action selector="togglerFullScreen:" target="-2" id="TaJ-Dx-Xbl"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pCs-2Q-AjA">
-                        <rect key="frame" x="314" y="-5" width="82" height="32"/>
-                        <buttonCell key="cell" type="push" title="选择频道" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="upi-L6-J2t">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="test:" target="-2" id="rgQ-DT-Owf"/>
-                        </connections>
-                    </button>
                     <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NkV-DH-azj" customClass="MMRotatedImage">
                         <rect key="frame" x="21" y="391" width="96" height="96"/>
                     </customView>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2wk-bX-f07">
-                        <rect key="frame" x="7" y="-5" width="82" height="32"/>
-                        <buttonCell key="cell" type="push" title="歌词" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4wE-XI-3cm">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="showLyric:" target="-2" id="g7H-I5-h30"/>
-                        </connections>
-                    </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0yN-Dd-foX">
                         <rect key="frame" x="342" y="424" width="40" height="43"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="playing_delete_normal" imagePosition="overlaps" alignment="center" alternateImage="playing_delete_normal" imageScaling="proportionallyDown" inset="2" id="nf9-A7-kYh">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="deleteMusic:" target="-2" id="Au9-8H-Om1"/>
+                        </connections>
                     </button>
                 </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="uHF-Er-O7B"/>
             </connections>
-            <point key="canvasLocation" x="469" y="413"/>
+            <point key="canvasLocation" x="455" y="422"/>
         </window>
-        <customView id="eWe-6V-feH" userLabel="MainView" customClass="MMView">
+        <customView id="eWe-6V-feH" userLabel="MainView" customClass="MMChannelView">
             <rect key="frame" x="0.0" y="0.0" width="400" height="500"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FHu-m2-sSc">
                     <rect key="frame" x="159" y="4" width="82" height="32"/>
-                    <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="La2-XE-w2d">
+                    <buttonCell key="cell" type="push" title="返回" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="La2-XE-w2d">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
-                        <action selector="test1:" target="-2" id="ShF-qo-jpr"/>
+                        <action selector="selectChannel:" target="eWe-6V-feH" id="2bz-zO-TZV"/>
                     </connections>
                 </button>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RHq-sD-X0C">
-                    <rect key="frame" x="163" y="480" width="74" height="17"/>
+                    <rect key="frame" x="163" y="483" width="74" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="选择频道" id="aIx-DJ-I65">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wpm-Xz-aX8">
-                    <rect key="frame" x="27" y="445" width="71" height="17"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="推荐频道" id="xei-Gt-fwk">
+            </subviews>
+            <point key="canvasLocation" x="-438" y="422"/>
+        </customView>
+        <customView id="EfF-xm-PL3">
+            <rect key="frame" x="0.0" y="0.0" width="400" height="500"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nxe-Kd-Emx">
+                    <rect key="frame" x="173" y="475" width="55" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="设置" id="1u0-Pt-J5h">
                         <font key="font" metaFont="system"/>
-                        <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        <color key="textColor" red="1" green="1" blue="0.99607843139999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N4e-Y8-KM9">
-                    <rect key="frame" x="23" y="393" width="79" height="32"/>
-                    <buttonCell key="cell" type="push" title="私人频道" bezelStyle="rounded" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oOb-Sj-29a">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hRs-Wa-Xms">
+                    <rect key="frame" x="20" y="437" width="66" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="当前帐号:" id="bQh-f7-RdB">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QEN-gF-usG">
+                    <rect key="frame" x="284" y="426" width="82" height="32"/>
+                    <buttonCell key="cell" type="push" title="登出" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="z1u-aU-e60">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                 </button>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zC0-7X-OGh">
-                    <rect key="frame" x="110" y="393" width="79" height="32"/>
-                    <buttonCell key="cell" type="push" title="我喜欢" bezelStyle="rounded" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YkE-xZ-R4U">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                </button>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T9k-K6-gc9">
-                    <rect key="frame" x="23" y="344" width="79" height="32"/>
-                    <buttonCell key="cell" type="push" title="热歌" bezelStyle="rounded" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Vcd-15-IOz">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="hotMusic:" target="-2" id="QG6-2e-0vb"/>
-                    </connections>
-                </button>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jfJ-4g-PWO">
-                    <rect key="frame" x="110" y="344" width="79" height="32"/>
-                    <buttonCell key="cell" type="push" title="经典" bezelStyle="rounded" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3Yz-XQ-CVU">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="classicMusic:" target="-2" id="w6x-ll-6be"/>
-                    </connections>
-                </button>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ECJ-hu-F5v">
-                    <rect key="frame" x="201" y="344" width="79" height="32"/>
-                    <buttonCell key="cell" type="push" title="好声音" bezelStyle="rounded" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fre-DG-5bL">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="chineseVoice:" target="-2" id="IQT-7t-0HX"/>
-                    </connections>
-                </button>
-                <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eTn-ju-Ofx">
-                    <rect key="frame" x="0.0" y="40" width="400" height="432"/>
-                    <clipView key="contentView" misplaced="YES" drawsBackground="NO" copiesOnScroll="NO" id="3ps-s2-74a">
-                        <rect key="frame" x="1" y="1" width="166" height="79"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UPu-Ch-tVu">
-                                <rect key="frame" x="0.0" y="0.0" width="166" height="79"/>
-                            </view>
-                        </subviews>
-                    </clipView>
-                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="R1X-TF-tkp">
-                        <rect key="frame" x="1" y="80" width="166" height="15"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </scroller>
-                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="szM-Ww-eaV">
-                        <rect key="frame" x="167" y="1" width="15" height="79"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </scroller>
-                </scrollView>
-            </subviews>
-            <point key="canvasLocation" x="-380" y="413"/>
-        </customView>
-        <customView id="EfF-xm-PL3">
-            <rect key="frame" x="0.0" y="0.0" width="300" height="500"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cbm-QB-xLZ">
-                    <rect key="frame" x="124" y="425" width="38" height="17"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="gIf-Js-VgN">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lcU-aQ-SGA">
+                    <rect key="frame" x="92" y="437" width="146" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="hello1" id="Tzb-Cq-kNx">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
             </subviews>
-            <point key="canvasLocation" x="75.5" y="413"/>
+            <point key="canvasLocation" x="4" y="422"/>
         </customView>
         <button verticalHuggingPriority="750" id="SFv-zr-JII">
             <rect key="frame" x="0.0" y="0.0" width="82" height="32"/>
@@ -488,7 +446,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="30" horizontalPageScroll="10" verticalLineScroll="30" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0L7-BI-YMf">
-                    <rect key="frame" x="10" y="24" width="381" height="298"/>
+                    <rect key="frame" x="10" y="14" width="381" height="330"/>
                     <clipView key="contentView" misplaced="YES" drawsBackground="NO" copiesOnScroll="NO" id="2d2-A3-DDN">
                         <rect key="frame" x="1" y="0.0" width="238" height="134"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -549,16 +507,37 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
+                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gtx-xA-QSV">
+                    <rect key="frame" x="358" y="328" width="22" height="21"/>
+                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="return" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="l1Q-qc-KhH">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="showLyric:" target="-2" id="DaH-Bb-zGh"/>
+                    </connections>
+                </button>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ybV-76-8VB">
+                    <rect key="frame" x="20" y="169" width="360" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="无歌词" id="0rk-gq-ePp">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" red="1" green="1" blue="0.99607843139999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
             </subviews>
             <connections>
+                <outlet property="informationField" destination="ybV-76-8VB" id="LxE-uP-hQ9"/>
                 <outlet property="lyricView" destination="0BV-Jr-TuP" id="J2W-Hi-lws"/>
             </connections>
             <point key="canvasLocation" x="924" y="653.5"/>
         </customView>
     </objects>
     <resources>
+        <image name="channel" width="50" height="26.5"/>
         <image name="corner" width="14" height="14"/>
-        <image name="logo" width="120" height="120"/>
+        <image name="disk" width="45" height="45"/>
+        <image name="lyric_btn_normal" width="28" height="26.5"/>
         <image name="player_btn_favorited_highlight" width="100" height="100"/>
         <image name="player_btn_next_highlight" width="128" height="128"/>
         <image name="player_btn_next_normal" width="128" height="128"/>
@@ -568,6 +547,7 @@
         <image name="player_btn_pre_highlight" width="128" height="128"/>
         <image name="player_btn_pre_normal" width="128" height="128"/>
         <image name="playing_delete_normal" width="120" height="120"/>
+        <image name="return" width="16" height="16"/>
         <image name="search_icon" width="40" height="40"/>
     </resources>
 </document>
