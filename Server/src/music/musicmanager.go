@@ -49,6 +49,14 @@ func (this *musicManager) FetchMusicList(userId, channel int) ([]*element.MusicI
 	var retMusicList []*element.MusicInfo = nil
 	switch channel {
 	case 0:
+		musicList, err := model.MusicModelInstance().FetchRandomList(50)
+		if err != nil {
+			return nil, err
+		}
+		for _, music := range musicList {
+			retMusicList = append(retMusicList, music.MusicInfo)
+			music.IsLoveMusic = true
+		}
 	case 1:
 		musicList, err := model.MusicModelInstance().FetchLoveList(userId)
 		if err != nil {
