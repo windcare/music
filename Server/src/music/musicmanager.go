@@ -54,8 +54,19 @@ func (this *musicManager) FetchMusicList(userId, channel int) ([]*element.MusicI
 			return nil, err
 		}
 		for _, music := range musicList {
-			retMusicList = append(retMusicList, music.MusicInfo)
-			music.IsLoveMusic = true
+			loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
+			if err != nil {
+				fmt.Println("FetchMusicList Error: ", err)
+				return nil, err
+			}
+			switch loveDegree {
+			case element.LoveDegreeNone:
+				retMusicList = append(retMusicList, music)
+			case element.LoveDegreeHate:
+			case element.LoveDegreeLike:
+				music.IsLoveMusic = true
+				retMusicList = append(retMusicList, music)
+			}
 		}
 	case 1:
 		musicList, err := model.MusicModelInstance().FetchLoveList(userId)
