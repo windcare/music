@@ -5,11 +5,12 @@ import (
 	"encoding/hex"
 	"fmt"
 	"music"
+	"music/download"
 	"net/http"
 	"strconv"
 )
 
-type downloadFunc func(musicId int, information music.FetchInformationCallback, progress music.DownloadProgressCallback)
+type downloadFunc func(musicId int, information download.FetchInformationCallback, progress download.DownloadProgressCallback)
 
 func getMd5String(s string) string {
 	h := md5.New()

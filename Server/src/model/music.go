@@ -46,6 +46,8 @@ func (this *musicModel) SaveMusic(musicInfo *element.MusicInfo) (int, error) {
 		return BaiduMusicModelInstance().InsertMusic(musicInfo)
 	case element.LocalMusicSourceType:
 		return MyMusicModelInstance().InsertMusic(musicInfo)
+	case element.QQMusicSourceType:
+		return QQMusicModelInstance().InsertMusic(musicInfo)
 	default:
 		return 0, errors.New("SourceType Error")
 	}
@@ -73,6 +75,8 @@ func (this *musicModel) UpdateMusic(musicInfo *element.MusicInfo) error {
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
 		err = BaiduMusicModelInstance().UpdateMusic(musicInfo)
+	case element.QQMusicSourceType:
+		err = QQMusicModelInstance().UpdateMusic(musicInfo)
 	case element.LocalMusicSourceType:
 	}
 	return err
@@ -102,13 +106,12 @@ func (this *musicModel) ChangeSourceType(srcType, dstType int, musicInfo *elemen
 			}
 			_, err = MyMusicModelInstance().InsertMusic(musicInfo)
 			return err
-		} else {
-			err := MyMusicModelInstance().DeleteMusic(musicInfo.MusicId)
+		} else if srcType == element.QQMusicSourceType {
+			err := QQMusicModelInstance().DeleteMusic(musicInfo.MusicId)
 			if err != nil {
 				return err
 			}
-			_, err = BaiduMusicModelInstance().InsertMusic(musicInfo)
-			return err
+			_, err = MyMusicModelInstance().InsertMusic(musicInfo)
 		}
 	}
 	return nil
@@ -381,6 +384,8 @@ func (this *musicModel) QueryMusicById(musicId int) (*element.MusicInfo, error) 
 			err = BaiduMusicModelInstance().FetchMusicInfo(musicInfo)
 		case element.LocalMusicSourceType:
 			err = MyMusicModelInstance().FetchMusicInfo(musicInfo)
+		case element.QQMusicSourceType:
+			err = QQMusicModelInstance().FetchMusicInfo(musicInfo)
 		default:
 			return nil, errors.New("SourceType Error!")
 		}

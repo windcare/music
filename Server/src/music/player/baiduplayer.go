@@ -14,6 +14,12 @@ import (
 	"time"
 )
 
+const baiduPlayListURLBase = "http://fm.baidu.com/dev/api/?tn=playlist&id=%s&hascode=&_=%d"
+const baiduMusicInfoURLBase = "http://fm.baidu.com/data/music/songinfo"
+const baiduMusicLinkURLBase = "http://fm.baidu.com/data/music/songlink"
+const baiduMusicSearchURLBase = "http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.search.catalogSug&query=%s&_=%d"
+const baiduMusicHost = "http://fm.baidu.com"
+
 const (
 	BaiduMusicChannelPersonal    = iota // 私人频道
 	BaiduMusicChannleLove               // 我喜欢
@@ -47,14 +53,7 @@ const (
 	BaiduMusicChannelSad                // 伤感
 	BaiduMusicChannelReleax             // 轻松
 	BaiduMusicChannelAlone              // 寂寞
-
 )
-
-const baiduPlayListURLBase = "http://fm.baidu.com/dev/api/?tn=playlist&id=%s&hascode=&_=%d"
-const baiduMusicInfoURLBase = "http://fm.baidu.com/data/music/songinfo"
-const baiduMusicLinkURLBase = "http://fm.baidu.com/data/music/songlink"
-const baiduMusicSearchURLBase = "http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.search.catalogSug&query=%s&_=%d"
-const baiduMusicHost = "http://fm.baidu.com"
 
 type baiduMusicPlayer struct {
 }

@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"model"
+	"music/download"
 	"music/player"
 	"os"
 	"strings"
@@ -21,6 +22,12 @@ import (
 const (
 	BaiduPlayer = iota
 	MyPlayer
+	QQPlayer
+)
+
+const (
+	FetchTypeChannel = iota
+	FetchTypeRank
 )
 
 type musicManager struct {
@@ -45,60 +52,6 @@ func (this *musicManager) SetPlayer(playerType int) {
 	}
 }
 
-func (this *musicManager) FetchMusicList(userId, channel int) ([]*element.MusicInfo, error) {
-	var retMusicList []*element.MusicInfo = nil
-	switch channel {
-	case 0:
-		musicList, err := model.MusicModelInstance().FetchRandomList(50)
-		if err != nil {
-			return nil, err
-		}
-		for _, music := range musicList {
-			loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
-			if err != nil {
-				fmt.Println("FetchMusicList Error: ", err)
-				return nil, err
-			}
-			switch loveDegree {
-			case element.LoveDegreeNone:
-				retMusicList = append(retMusicList, music)
-			case element.LoveDegreeHate:
-			case element.LoveDegreeLike:
-				music.IsLoveMusic = true
-				retMusicList = append(retMusicList, music)
-			}
-		}
-	case 1:
-		musicList, err := model.MusicModelInstance().FetchLoveList(userId)
-		if err != nil {
-			return nil, err
-		}
-		for _, music := range musicList {
-			retMusicList = append(retMusicList, music.MusicInfo)
-			music.IsLoveMusic = true
-		}
-	default:
-		musicList := player.BaiduMusicPlayerInstance().FetchMusicList(channel)
-		this.SaveMusicList(musicList)
-		for _, music := range musicList {
-			loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
-			if err != nil {
-				fmt.Println("FetchMusicList Error: ", err)
-				return nil, err
-			}
-			switch loveDegree {
-			case element.LoveDegreeNone:
-				retMusicList = append(retMusicList, music)
-			case element.LoveDegreeHate:
-			case element.LoveDegreeLike:
-				music.IsLoveMusic = true
-				retMusicList = append(retMusicList, music)
-			}
-		}
-	}
-	return retMusicList, nil
-}
-
 func (this *musicManager) FetchLoveList(userId int) ([]*element.MusicInfo, error) {
 	musicList, err := model.MusicModelInstance().FetchLoveList(userId)
 	if err != nil {
@@ -114,6 +67,45 @@ func (this *musicManager) FetchLoveList(userId int) ([]*element.MusicInfo, error
 			music.IsLoveMusic = true
 			retMusicList = append(retMusicList, music.MusicInfo)
 		}
+	}
+	return retMusicList, nil
+}
+
+func (this *musicManager) FetchMusicList(userId, channel int, fetchType int) ([]*element.MusicInfo, error) {
+	var retMusicList []*element.MusicInfo = nil
+	switch fetchType {
+	case FetchTypeChannel:
+		var musicList []*element.MusicInfo = nil
+		switch channel {
+		case 0:
+		case 1:
+			musicList = player.MyMusicPlayerInstance().FetchMusicList(channel, userId)
+		default:
+			musicList = player.BaiduMusicPlayerInstance().FetchMusicList(channel)
+			this.SaveMusicList(musicList)
+		}
+		if channel != 0 {
+			for _, music := range musicList {
+				loveDegree, err := model.MusicModelInstance().GetMusicLoveDegree(userId, music.MusicId)
+				if err != nil {
+					fmt.Println("FetchMusicList Error: ", err)
+					return nil, err
+				}
+				switch loveDegree {
+				case element.LoveDegreeNone:
+					retMusicList = append(retMusicList, music)
+				case element.LoveDegreeHate:
+				case element.LoveDegreeLike:
+					music.IsLoveMusic = true
+					retMusicList = append(retMusicList, music)
+				}
+			}
+		} else {
+			retMusicList = musicList
+		}
+	case FetchTypeRank:
+		retMusicList = player.QQMusicPlayerInstance().FetchMusicList(0)
+		this.SaveMusicList(retMusicList)
 	}
 	return retMusicList, nil
 }
@@ -151,7 +143,7 @@ func (this *musicManager) DownloadMusicList(musicList []*element.MusicInfo) {
 	// 	if ret == true || DownloadManagerInstance().IsExistInDownloadList(info.MusicName, info.MusicAuthor) {
 	// 		continue
 	// 	}
-	// 	downloadInfo := &DownloadElement{}
+	// 	downloadInfo := &download.DownloadInfo{}
 	// 	downloadInfo.MusicPath = info.MusicPath
 	// 	downloadInfo.MusicBigCoverPath = info.BigCoverImagePath
 	// 	downloadInfo.MusicSmallCoverPath = info.SmallCoverImagePath
@@ -177,6 +169,7 @@ func (this *musicManager) SaveMusicList(musicList []*element.MusicInfo) error {
 		} else if err != nil {
 			return err
 		} else {
+			fmt.Println("Save Music: ", info.MusicName)
 			musicId, err = model.MusicModelInstance().SaveMusic(info)
 			info.MusicId = musicId
 		}
@@ -196,7 +189,8 @@ func (this *musicManager) createUUID() string {
 	return str[0:8] + "-" + str[8:12] + "-" + str[12:16] + "-" + str[16:20] + "-" + str[20:32]
 }
 
-func (this *musicManager) DownloadMusic(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadMusic(musicId int,
+	informationCallback download.FetchInformationCallback, callback download.DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -210,7 +204,19 @@ func (this *musicManager) DownloadMusic(musicId int, informationCallback FetchIn
 	fmt.Println("Download Music: " + musicInfo.MusicName)
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
-		downloadInfo := &DownloadElement{}
+		fallthrough
+	case element.QQMusicSourceType:
+		// 首先去拉一下当前的链接
+		if musicInfo.SourceType == element.BaiduMusicSourceType {
+			// 百度音乐有失效期，需要再拉取一次
+			musicInfo = player.BaiduMusicPlayerInstance().FetchMusicById(musicId)
+		}
+		if musicInfo == nil {
+			var stop bool
+			callback(nil, err, &stop)
+			return
+		}
+		downloadInfo := &download.DownloadInfo{}
 		downloadInfo.Complete = func(musicInfo *element.MusicInfo) {
 			fmt.Println("Download Success!")
 			// 下载完成，将文件拷贝到本地目录，然后删除缓存目录
@@ -232,7 +238,7 @@ func (this *musicManager) DownloadMusic(musicId int, informationCallback FetchIn
 		musicInfo.MusicUUID = this.createUUID()
 		downloadInfo.DownloadPath = fmt.Sprintf("/tmp/%s", musicInfo.MusicUUID)
 		downloadInfo.DownloadType = DownloadTypeMusic
-		downloadInfo.DownloadContent = musicInfo
+		downloadInfo.MusicInfo = musicInfo
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
 		}
@@ -249,7 +255,7 @@ func (this *musicManager) DownloadMusic(musicId int, informationCallback FetchIn
 	}
 }
 
-func (this *musicManager) DownloadLyric(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadLyric(musicId int, informationCallback download.FetchInformationCallback, callback download.DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -263,9 +269,10 @@ func (this *musicManager) DownloadLyric(musicId int, informationCallback FetchIn
 	fmt.Println("Download Lyric: " + musicInfo.MusicName)
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
-		downloadInfo := &DownloadElement{}
-		downloadInfo.DownloadType = DownloadTypeSingle
-		downloadInfo.DownloadContent = musicInfo.LyricPath
+	case element.QQMusicSourceType:
+		downloadInfo := &download.DownloadInfo{}
+		downloadInfo.DownloadType = DownloadTypeLyric
+		downloadInfo.MusicInfo = musicInfo
 		downloadInfo.DownloadPath = cache.CacheManagerInstance().GenerateCacheFile()
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
@@ -278,7 +285,8 @@ func (this *musicManager) DownloadLyric(musicId int, informationCallback FetchIn
 		<-downloadInfo.CompleteSignal
 		cache.CacheManagerInstance().DeleteCacheFile(downloadInfo.DownloadPath)
 	case element.LocalMusicSourceType:
-		musicInfo.LyricPath = fmt.Sprintf("%s/resource/%s", config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.LyricPath)
+		musicInfo.LyricPath = fmt.Sprintf("%s/resource/%s",
+			config.ConfigManagerInstance().ReadLocalResourcePath(), musicInfo.LyricPath)
 		content, err := this.readLocalFile(musicInfo.LyricPath)
 		informationCallback(len(content))
 		var stop bool
@@ -286,7 +294,7 @@ func (this *musicManager) DownloadLyric(musicId int, informationCallback FetchIn
 	}
 }
 
-func (this *musicManager) DownloadBigCoverImage(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadBigCoverImage(musicId int, informationCallback download.FetchInformationCallback, callback download.DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -300,9 +308,10 @@ func (this *musicManager) DownloadBigCoverImage(musicId int, informationCallback
 	fmt.Println("Download big cover image: " + musicInfo.MusicName)
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
-		downloadInfo := &DownloadElement{}
-		downloadInfo.DownloadType = DownloadTypeSingle
-		downloadInfo.DownloadContent = musicInfo.BigCoverImagePath
+	case element.QQMusicSourceType:
+		downloadInfo := &download.DownloadInfo{}
+		downloadInfo.DownloadType = DownloadTypeBigCover
+		downloadInfo.MusicInfo = musicInfo
 		downloadInfo.DownloadPath = cache.CacheManagerInstance().GenerateCacheFile()
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
@@ -323,7 +332,7 @@ func (this *musicManager) DownloadBigCoverImage(musicId int, informationCallback
 	}
 }
 
-func (this *musicManager) DownloadSmallCoverImage(musicId int, informationCallback FetchInformationCallback, callback DownloadProgressCallback) {
+func (this *musicManager) DownloadSmallCoverImage(musicId int, informationCallback download.FetchInformationCallback, callback download.DownloadProgressCallback) {
 	musicInfo, err := model.MusicModelInstance().QueryMusicById(musicId)
 	if musicInfo == nil {
 		var stop bool
@@ -337,9 +346,10 @@ func (this *musicManager) DownloadSmallCoverImage(musicId int, informationCallba
 	fmt.Println("Download small cover image: " + musicInfo.MusicName)
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
-		downloadInfo := &DownloadElement{}
-		downloadInfo.DownloadType = DownloadTypeSingle
-		downloadInfo.DownloadContent = musicInfo.SmallCoverImagePath
+	case element.QQMusicSourceType:
+		downloadInfo := &download.DownloadInfo{}
+		downloadInfo.DownloadType = DownloadTypeSmallCover
+		downloadInfo.MusicInfo = musicInfo
 		downloadInfo.DownloadPath = cache.CacheManagerInstance().GenerateCacheFile()
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)

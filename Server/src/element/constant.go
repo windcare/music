@@ -9,4 +9,5 @@ const (
 const (
 	BaiduMusicSourceType = iota
 	LocalMusicSourceType
+	QQMusicSourceType
 )

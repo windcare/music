@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"model"
 	"music"
+	"music/player"
 	"net/http"
 	"strconv"
 	"token"
@@ -96,7 +97,7 @@ func (this *MusicController) fetchRandomList(userId int, w http.ResponseWriter, 
 		NormalResponse(w, InvalidParam)
 	} else {
 		music.MusicManagerInstance().SetPlayer(music.BaiduPlayer)
-		musicList, err := music.MusicManagerInstance().FetchMusicList(userId, channel)
+		musicList, err := music.MusicManagerInstance().FetchMusicList(userId, channel, 0)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 		} else {
@@ -217,8 +218,8 @@ func (this *MusicController) MusicAction(w http.ResponseWriter, r *http.Request)
 	} else if len(tokenCookie.Value) == 0 {
 		NormalResponse(w, EmptyToken)
 	} else {
-		ret, userId := token.TokenManagerInstance().CheckTokenExist(tokenCookie.Value)
-		if ret == false {
+		findToken, userId := token.TokenManagerInstance().CheckTokenExist(tokenCookie.Value)
+		if findToken == false {
 			fmt.Println("search Token Error: ", err)
 			NormalResponse(w, InvalidToken)
 		} else {
@@ -239,6 +240,8 @@ func (this *MusicController) MusicAction(w http.ResponseWriter, r *http.Request)
 				this.listenMusic(userId, w, r)
 			case "searchMusic":
 				this.searchMusic(userId, w, r)
+			case "test":
+				player.QQMusicPlayerInstance().SearchMusic("周杰伦", 0, 50)
 			case "musicProxy":
 				// 先测试请求某一首歌
 				// action="musicProxy&player=baidu&type=fetchList&"

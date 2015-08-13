@@ -234,7 +234,7 @@
 			$.ajax({
 				type: 'GET',
 				url: "http://{{.Host}}:{{.Port}}/music" ,
-				data: "action=fetchRandomList",
+				data: "action=fetchRandomList&channel=2",
 				success: function(data) {
 					console.log(data);
 				},
