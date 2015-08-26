@@ -10,10 +10,17 @@
 #import "MMWindowController.h"
 #import "MusicInfo.h"
 
+@class MMSongTable;
+@class MMView;
+@class MMRankPageView;
 @interface MainWindowController : MMWindowController
 
 + (MainWindowController *)sharedMainWindowController;
 
+- (MMSongTable *)getSongTable;
+- (MMView *)getCenterView;
+- (MMRankPageView *)getRankPageView;
+- (void)setCurrentView:(NSView *)view;
 - (void)startParserLyric:(MusicInfo *)music;
 - (void)setMusicName:(NSString *)musicName authorName:(NSString *)artist;
 - (void)setDuration:(NSTimeInterval)duration;

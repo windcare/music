@@ -19,17 +19,31 @@
 #import "PlayManager.h"
 #import "MMSearchView.h"
 #import "MMLyricView.h"
-#import "MMChannelView.h"
+#import "MMOptinView.h"
+
+// options
+#import "MMHomePageView.h"
+#import "MMRankPageView.h"
+#import "MMFMPageView.h"
+#import "MMGuessPageView.h"
+#import "MMDevicePageView.h"
+#import "MMLovePageView.h"
+#import "MMSongPageView.h"
+#import "MMiTunesPageView.h"
+
+#import "MMSongTable.h"
+
 #import <QuartzCore/QuartzCore.h>
 
 static const CGFloat kWindowOriginYMargin = 30.0f;
 
 static const CGFloat kWindowOriginHeight = 120.0f;
-static const CGFloat kWindowFullHeight = 500.0f;
+static const CGFloat kWindowFullHeight = 660.0f;
 
-@interface MainWindowController () <MMSliderDelegate, NSControlTextEditingDelegate, MMSearchViewDelegate>
+@interface MainWindowController () <MMSliderDelegate, 
+                                    NSControlTextEditingDelegate, 
+                                    MMSearchViewDelegate, MMOptionDelegate>
 
-@property (nonatomic, weak) IBOutlet MMChannelView *channelView;
 @property (nonatomic, weak) IBOutlet NSView *view2;
 @property (nonatomic, weak) IBOutlet MMSlider *slider;
 @property (nonatomic, weak) IBOutlet MMTableView *tableView;
@@ -42,6 +56,34 @@ static const CGFloat kWindowFullHeight = 500.0f;
 @property (nonatomic, weak) IBOutlet NSView *listView;
 @property (nonatomic, weak) IBOutlet MMLyricView *lyricView;
 @property (nonatomic, weak) IBOutlet NSButton *loveBtn;
+
+// layout view
+@property (nonatomic, weak) IBOutlet MMView *layoutView;
+
+// top view
+@property (nonatomic, weak) IBOutlet MMView *topView;
+
+// bottom view
+@property (nonatomic, weak) IBOutlet MMView *bottomView;
+
+// center view
+@property (nonatomic, weak) NSView *currentOptionView;
+@property (nonatomic, weak) IBOutlet MMView *centerView;
+@property (nonatomic, weak) IBOutlet MMHomePageView *homePageView;
+@property (nonatomic, weak) IBOutlet MMRankPageView *rankPageView;
+@property (nonatomic, weak) IBOutlet MMFMPageView *fmPageView;
+@property (nonatomic, weak) IBOutlet MMGuessPageView *guessPageView;
+@property (nonatomic, weak) IBOutlet MMDevicePageView *devicePageView;
+@property (nonatomic, weak) IBOutlet MMLovePageView *lovePageView;
+@property (nonatomic, weak) IBOutlet MMSongPageView *songPageView;
+@property (nonatomic, weak) IBOutlet MMiTunesPageView *iTunesPageView;
+
+// left view
+@property (nonatomic, weak) IBOutlet MMView *leftView;
+@property (nonatomic, weak) IBOutlet MMOptinView *optionView;
+
+// songView
+@property (nonatomic, weak) IBOutlet MMSongTable *songListView;
 
 
 @property (nonatomic, assign) BOOL isFullScreen;
@@ -63,13 +105,14 @@ static const CGFloat kWindowFullHeight = 500.0f;
 
 - (void)windowDidLoad {
     [super windowDidLoad];
-    [(MMWindow *)self.window setClearBackground];
-    [(MMView *)self.window.contentView setBackgroundImage:[NSImage imageNamed:@"background"]];
-    [self setRootView:self.window.contentView];
     
-    NSRect originRect = self.window.frame;
-    originRect.size.height = kWindowOriginHeight;
-    [self.window setFrame:originRect display:YES];
+    [self initLayoutView];
+    [self initTopView];
+    [self initCenterView];
+    [self initBottomView];
+    [self initLeftView];
+    
+    [self setRootView:self.window.contentView];
     
     [self.slider setDelegate:self];
     self.slider.duration = 400.0;
@@ -78,7 +121,6 @@ static const CGFloat kWindowFullHeight = 500.0f;
     [self.tableView setDoubleAction:@selector(didDoubleClickFolderRow:)];
     
     [PlayManager sharedManager].controller = self;
-    self.channelView.controller = self;
     
     [self fetchMusic:MMMusicChannelChildren];
     
@@ -96,6 +138,86 @@ static const CGFloat kWindowFullHeight = 500.0f;
      }];
 }
 
+- (void)initLayoutView {
+    [(MMWindow *)self.window setClearBackground];
+    [(MMWindow *)self.window setContentView:self.layoutView];
+    [self.layoutView setBackgroundColor:[NSColor whiteColor]];
+}
+
+- (void)initTopView {
+    [self.topView setBackgroundColor:[NSColor colorWithCalibratedRed:0.125 green:0.643 blue:0.325 alpha:1.0]];
+    
+    // 显示右上角button
+    NSButton *closeButton = [NSWindow standardWindowButton:NSWindowCloseButton forStyleMask:NSTitledWindowMask];
+    NSRect closeButtonRect = [closeButton frame];
+    [closeButton setFrame:NSMakeRect(6, self.window.frame.size.height - 3 - closeButtonRect.size.height, closeButtonRect.size.width, closeButtonRect.size.height)];
+    [closeButton setAutoresizingMask:NSViewMaxXMargin | NSViewMinYMargin];
+    
+    [self.layoutView addSubview:closeButton];
+}
+
+- (void)initCenterView {
+    NSArray *options = @[@{
+                         @"type": @(0),
+                         @"title": @"精选",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"首页",
+                         @"image": @"home_recommend",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"排行榜",
+                         @"image": @"home_ranking",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"电台",
+                         @"image": @"home_radio",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"猜你喜欢",
+                         @"image": @"home_gessyoulike",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"我的设备",
+                         @"image": @"home_choiceness",
+                         },
+                     @{
+                         @"type": @(0),
+                         @"title": @"我的歌曲",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"我喜欢",
+                         @"image": @"home_love",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"我的歌单",
+                         @"image": @"home_custom",
+                         },
+                     @{
+                         @"type": @(1),
+                         @"title": @"iTunes音乐",
+                         @"image": @"home_custom",
+                         }];
+    [self.optionView setOptions:options];
+    [self.optionView setDelegate:self];
+}
+
+- (void)initBottomView {
+    [self.bottomView setBackgroundColor:[NSColor colorWithCalibratedRed:0.067 green:0.247 blue:0.239 alpha:1.0]];
+}
+
+- (void)initLeftView {
+    [self.leftView setBackgroundColor:[NSColor colorWithCalibratedRed:0.941 green:0.945 blue:0.969 alpha:1.0]];
+    [self.leftView addSubview:self.optionView];
+}
+
 + (MainWindowController *)sharedMainWindowController{
     static MainWindowController *_sharedMainWindowController;
     static dispatch_once_t onceToken;
@@ -106,9 +228,129 @@ static const CGFloat kWindowFullHeight = 500.0f;
     return _sharedMainWindowController;
 }
 
-- (IBAction)test:(id)sender {
-    [(MMView *)self.channelView setBackgroundImage:[NSImage imageNamed:@"background"]];
-    [self pushView:self.channelView animated:YES];
+- (MMSongTable *)getSongTable {
+    return self.songListView;
+}
+
+- (MMView *)getCenterView {
+    return self.centerView;
+}
+
+- (MMRankPageView *)getRankPageView {
+    return self.rankPageView;
+}
+
+- (void)setCurrentView:(NSView *)view {
+    if (self.currentOptionView) {
+        [self.currentOptionView removeFromSuperview];
+    }
+    self.currentOptionView = view;
+}
+
+- (void)didOptionChange:(NSInteger)index {
+    if (self.currentOptionView) {
+        [self.currentOptionView removeFromSuperview];
+    }
+    MMView *selectPageView = nil;
+    switch (index) {
+        case 1:
+            selectPageView = self.homePageView;
+            break;
+        case 2: {
+            selectPageView = self.rankPageView;
+            NSArray *rankInfos = @[@{
+                                       @"image": @"pop",
+                                       @"title": @"巅峰榜·流行指数",
+                                       },
+                                   @{
+                                       @"image": @"inner",
+                                       @"title": @"巅峰榜·内地",
+                                       },
+                                   @{
+                                       @"image": @"hk",
+                                       @"title": @"巅峰榜·港台榜",
+                                       },
+                                   @{
+                                       @"image": @"us",
+                                       @"title": @"巅峰榜·欧美",
+                                       },
+                                   @{
+                                       @"image": @"jp",
+                                       @"title": @"巅峰榜·日本",
+                                       },
+                                   @{
+                                       @"image": @"national",
+                                       @"title": @"巅峰榜·民谣",
+                                       },
+                                   @{
+                                       @"image": @"rock",
+                                       @"title": @"巅峰榜·摇滚",
+                                       },
+                                   @{
+                                       @"image": @"china-top",
+                                       @"title": @"中国top排行榜",
+                                       },
+                                   @{
+                                       @"image": @"iTunes",
+                                       @"title": @"iTunes榜",
+                                       },
+                                   @{
+                                       @"image": @"bk-bussiness",
+                                       @"title": @"香港商业电台榜",
+                                       },
+                                   @{
+                                       @"image": @"billboard",
+                                       @"title": @"Billboard美国公告牌榜",
+                                       },
+                                   @{
+                                       @"image": @"uk",
+                                       @"title": @"英国UK榜",
+                                       },
+                                   @{
+                                       @"image": @"channel-v",
+                                       @"title": @"Channel[V]榜",
+                                       },
+                                   @{
+                                       @"image": @"hk_new",
+                                       @"title": @"香港新城榜",
+                                       },
+                                   @{
+                                       @"image": @"dark-disk",
+                                       @"title": @"幽浮劲碟榜",
+                                       },
+                                   @{
+                                       @"image": @"jp_pub",
+                                       @"title": @"日本公信榜",
+                                       },
+                                   @{
+                                       @"image": @"ktv",
+                                       @"title": @"KTV榜",
+                                       }];
+            [self.rankPageView setRankInfos:rankInfos];
+            break;
+        }
+        case 3:
+            selectPageView = self.fmPageView;
+            break;
+        case 4:
+            selectPageView = self.guessPageView;
+            break;
+        case 5:
+            selectPageView = self.devicePageView;
+            break;
+        case 7:
+            selectPageView = self.lovePageView;
+            break;
+        case 8:
+            selectPageView = self.songPageView;
+            break;
+        case 9:
+            selectPageView = self.iTunesPageView;
+        default:
+            break;
+    }
+    [self.centerView addSubview:selectPageView];
+    self.currentOptionView = selectPageView;
 }
 
 - (IBAction)showLyric:(id)sender {
@@ -450,25 +692,21 @@ static const CGFloat kWindowFullHeight = 500.0f;
     [self.tableView reloadData];
 }
 
-- (void)refreshMusicList {
-    MMMusicChannel currentChannel = [self.channelView getCurrentChannel];
-    [self fetchMusic:currentChannel];
-}
 
 - (void)fetchMusic:(MMMusicChannel)channel {
-    [[MusicManager sharedManager] fetchRandomListWithChannel:channel complete:^(int errorCode, NSArray *musicList) {
-        if (errorCode == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (musicList.count == 0) {
-                    [self fetchMusic:channel];
-                } else {
-                    self.musicList = musicList;
-                    [[PlayManager sharedManager] setPlayMusicList:musicList];
-                    [self.tableView reloadData];
-                }
-            });
-        }
-    }];
+//    [[MusicManager sharedManager] fetchRandomListWithChannel:channel complete:^(int errorCode, NSArray *musicList) {
+//        if (errorCode == 0) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                if (musicList.count == 0) {
+//                    [self fetchMusic:channel];
+//                } else {
+//                    self.musicList = musicList;
+//                    [[PlayManager sharedManager] setPlayMusicList:musicList];
+//                    [self.tableView reloadData];
+//                }
+//            });
+//        }
+//    }];
 }
 
 @end

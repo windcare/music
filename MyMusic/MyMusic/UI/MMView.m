@@ -28,6 +28,11 @@
     }
 }
 
+- (void)setBackgroundColor:(NSColor *)color {
+    self.wantsLayer = YES;
+    self.layer.backgroundColor = [color CGColor];
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     if (self.needDrawBackgroundImage) {
         [self.backgroundImage drawInRect:self.bounds

@@ -20,13 +20,14 @@ import (
 )
 
 const (
-	BaiduPlayer = iota
-	MyPlayer
+	MyPlayer = iota
+	BaiduPlayer
 	QQPlayer
 )
 
 const (
-	FetchTypeChannel = iota
+	FetchTypeLocal = iota
+	FetchTypeChannel
 	FetchTypeRank
 )
 
@@ -104,7 +105,7 @@ func (this *musicManager) FetchMusicList(userId, channel int, fetchType int) ([]
 			retMusicList = musicList
 		}
 	case FetchTypeRank:
-		retMusicList = player.QQMusicPlayerInstance().FetchMusicList(0)
+		retMusicList = player.QQMusicPlayerInstance().FetchMusicList(channel)
 		this.SaveMusicList(retMusicList)
 	}
 	return retMusicList, nil
@@ -209,7 +210,9 @@ func (this *musicManager) DownloadMusic(musicId int,
 		// 首先去拉一下当前的链接
 		if musicInfo.SourceType == element.BaiduMusicSourceType {
 			// 百度音乐有失效期，需要再拉取一次
-			musicInfo = player.BaiduMusicPlayerInstance().FetchMusicById(musicId)
+			player.BaiduMusicPlayerInstance().FetchMusicLinkInfoById(musicInfo)
+		} else if musicInfo.SourceType == element.QQMusicSourceType {
+			player.QQMusicPlayerInstance().FetchMusicLinkInfoById(musicInfo)
 		}
 		if musicInfo == nil {
 			var stop bool
@@ -269,11 +272,12 @@ func (this *musicManager) DownloadLyric(musicId int, informationCallback downloa
 	fmt.Println("Download Lyric: " + musicInfo.MusicName)
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
+		fallthrough
 	case element.QQMusicSourceType:
 		downloadInfo := &download.DownloadInfo{}
 		downloadInfo.DownloadType = DownloadTypeLyric
 		downloadInfo.MusicInfo = musicInfo
-		downloadInfo.DownloadPath = cache.CacheManagerInstance().GenerateCacheFile()
+		downloadInfo.DownloadPath = musicInfo.LyricPath
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
 		}
@@ -308,11 +312,12 @@ func (this *musicManager) DownloadBigCoverImage(musicId int, informationCallback
 	fmt.Println("Download big cover image: " + musicInfo.MusicName)
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
+		fallthrough
 	case element.QQMusicSourceType:
 		downloadInfo := &download.DownloadInfo{}
 		downloadInfo.DownloadType = DownloadTypeBigCover
 		downloadInfo.MusicInfo = musicInfo
-		downloadInfo.DownloadPath = cache.CacheManagerInstance().GenerateCacheFile()
+		downloadInfo.DownloadPath = musicInfo.BigCoverImagePath
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
 		}
@@ -346,11 +351,12 @@ func (this *musicManager) DownloadSmallCoverImage(musicId int, informationCallba
 	fmt.Println("Download small cover image: " + musicInfo.MusicName)
 	switch musicInfo.SourceType {
 	case element.BaiduMusicSourceType:
+		fallthrough
 	case element.QQMusicSourceType:
 		downloadInfo := &download.DownloadInfo{}
 		downloadInfo.DownloadType = DownloadTypeSmallCover
 		downloadInfo.MusicInfo = musicInfo
-		downloadInfo.DownloadPath = cache.CacheManagerInstance().GenerateCacheFile()
+		downloadInfo.DownloadPath = musicInfo.SmallCoverImagePath
 		downloadInfo.Progress = func(content []byte, err error, stop *bool) {
 			callback(content, err, stop)
 		}

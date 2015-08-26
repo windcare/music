@@ -96,13 +96,18 @@ func (this *MusicController) fetchRandomList(userId int, w http.ResponseWriter, 
 	if err != nil {
 		NormalResponse(w, InvalidParam)
 	} else {
-		music.MusicManagerInstance().SetPlayer(music.BaiduPlayer)
-		musicList, err := music.MusicManagerInstance().FetchMusicList(userId, channel, 0)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
+		musicType, err := strconv.Atoi(r.Form.Get("type"))
+		if err != nil || musicType > music.MusicTypeMax || musicType < 0 {
+			NormalResponse(w, InvalidParam)
 		} else {
-			if len(musicList) != 0 {
-				this.writeMusicInfo(musicList, w)
+			music.MusicManagerInstance().SetPlayer(music.BaiduPlayer)
+			musicList, err := music.MusicManagerInstance().FetchMusicList(userId, channel, musicType)
+			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+			} else {
+				if len(musicList) != 0 {
+					this.writeMusicInfo(musicList, w)
+				}
 			}
 		}
 	}

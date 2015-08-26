@@ -40,3 +40,23 @@ typedef enum : NSInteger {
     MMMusicChannelReleax,             // 轻松
     MMMusicChannelAlone,              // 寂寞
 } MMMusicChannel;
+
+typedef enum : NSInteger {
+  MMMusicRankTypePopulation = 0x0,        // 流行指数
+  MMMusicRankTypeInner,                   // 内地
+  MMMusicRankTypeHK,                      // 港台
+  MMMusicRankTypeEurope,                  // 欧美
+  MMMusicRankTypeJapan,                   // 日本
+  MMMusicRankTypeNational,                // 民谣
+  MMMusicRankTypeRock,                    // 摇滚
+  MMMusicRankTypeTop,                     // 中国top
+  MMMusicRankTypeiTunes,                  // iTunes
+  MMMusicRankTypeHKBusiness,              // 香港商业榜
+  MMMusicRankTypeBillboard,               // 美国Billboard公告牌
+  MMMusicRankTypeUK,                      // 英国UK榜
+  MMMusicRankTypeChannelV,                // Channel[V]
+  MMMusicRankTypeHKNew,                   // 香港新城榜
+  MMMusicRankTypeDarkDisk,                // 幽浮劲碟榜
+  MMMusicRankTypeJapanPub,                // 日本公信榜
+  MMMusicRankTypeKTV,                     // KTV榜
+} MMMusicRankType;

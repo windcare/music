@@ -7,11 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4609AC5A1B78E85D00265723 /* MMOptinView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609AC591B78E85D00265723 /* MMOptinView.m */; };
+		4609AC5D1B78EF3A00265723 /* MMOptionCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609AC5C1B78EF3A00265723 /* MMOptionCellView.m */; };
+		4609AC601B78FA1400265723 /* MMOptionSepratorCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609AC5F1B78FA1400265723 /* MMOptionSepratorCellView.m */; };
+		4609AD981B7A0F8700265723 /* MMHomePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609AD971B7A0F8700265723 /* MMHomePageView.m */; };
+		4609AD9E1B7A15C400265723 /* MMRankPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609AD9D1B7A15C400265723 /* MMRankPageView.m */; };
+		4609ADA21B7A163700265723 /* MMFMPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADA11B7A163700265723 /* MMFMPageView.m */; };
+		4609ADA61B7A167200265723 /* MMGuessPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADA51B7A167200265723 /* MMGuessPageView.m */; };
+		4609ADAA1B7A169F00265723 /* MMDevicePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADA91B7A169F00265723 /* MMDevicePageView.m */; };
+		4609ADAF1B7A16DB00265723 /* MMLovePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADAE1B7A16DB00265723 /* MMLovePageView.m */; };
+		4609ADB31B7A172100265723 /* MMSongPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADB21B7A172100265723 /* MMSongPageView.m */; };
+		4609ADB71B7A177D00265723 /* MMiTunesPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADB61B7A177D00265723 /* MMiTunesPageView.m */; };
+		4609ADC21B7B748200265723 /* MMRankItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADC11B7B748200265723 /* MMRankItemCell.m */; };
+		4609ADC81B7B90C200265723 /* MMSongTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADC71B7B90C200265723 /* MMSongTable.m */; };
+		4609ADCE1B7B929600265723 /* MMSongTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4609ADCD1B7B929600265723 /* MMSongTableCellView.m */; };
 		46196F271B3C197400230D5E /* MMSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 46196F261B3C197400230D5E /* MMSearchView.m */; };
 		4625AEC41B148E69006A7C51 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4625AEC21B148E69006A7C51 /* MainWindowController.m */; };
 		4625AEC51B148E69006A7C51 /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4625AEC31B148E69006A7C51 /* MainWindowController.xib */; };
-		4634BE901B45028E00B2E9EB /* MMChannelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE8F1B45028E00B2E9EB /* MMChannelCell.m */; };
-		4634BE941B45052C00B2E9EB /* MMChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE931B45052C00B2E9EB /* MMChannelView.m */; };
+		4634BE901B45028E00B2E9EB /* MMFMPageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE8F1B45028E00B2E9EB /* MMFMPageViewCell.m */; };
 		4634BE961B45306900B2E9EB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46F9023F1B43CE6F00D29755 /* Images.xcassets */; };
 		4634BE991B453A1400B2E9EB /* LoginMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE981B453A1400B2E9EB /* LoginMananger.m */; };
 		4634BE9C1B453AC300B2E9EB /* MusicDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 4634BE9B1B453AC300B2E9EB /* MusicDefaults.m */; };
@@ -24,6 +37,8 @@
 		463A22311B395929004559A1 /* CAAnimation+MCAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 463A22301B395929004559A1 /* CAAnimation+MCAdditions.m */; };
 		463A22351B3975C1004559A1 /* MMTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 463A22341B3975C1004559A1 /* MMTableView.m */; };
 		463A223C1B397809004559A1 /* MMTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 463A223B1B397809004559A1 /* MMTableCellView.m */; };
+		463EAC1D1B83533A0079EA28 /* MMButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 463EAC1C1B83533A0079EA28 /* MMButton.m */; };
+		463EAC6A1B84A12A0079EA28 /* NSImage+MMAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 463EAC691B84A12A0079EA28 /* NSImage+MMAddition.m */; };
 		4649BC951B04C52F002D09F5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BC941B04C52F002D09F5 /* AppDelegate.m */; };
 		4649BC971B04C52F002D09F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BC961B04C52F002D09F5 /* main.m */; };
 		4649BCAB1B04C530002D09F5 /* MyMusicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4649BCAA1B04C530002D09F5 /* MyMusicTests.m */; };
@@ -86,15 +101,42 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4609AC581B78E85D00265723 /* MMOptinView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMOptinView.h; path = UI/MMOptinView.h; sourceTree = "<group>"; };
+		4609AC591B78E85D00265723 /* MMOptinView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMOptinView.m; path = UI/MMOptinView.m; sourceTree = "<group>"; };
+		4609AC5B1B78EF3A00265723 /* MMOptionCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMOptionCellView.h; path = UI/MMOptionCellView.h; sourceTree = "<group>"; };
+		4609AC5C1B78EF3A00265723 /* MMOptionCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMOptionCellView.m; path = UI/MMOptionCellView.m; sourceTree = "<group>"; };
+		4609AC5E1B78FA1400265723 /* MMOptionSepratorCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMOptionSepratorCellView.h; path = UI/MMOptionSepratorCellView.h; sourceTree = "<group>"; };
+		4609AC5F1B78FA1400265723 /* MMOptionSepratorCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMOptionSepratorCellView.m; path = UI/MMOptionSepratorCellView.m; sourceTree = "<group>"; };
+		4609AD961B7A0F8700265723 /* MMHomePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMHomePageView.h; path = UI/MMHomePageView.h; sourceTree = "<group>"; };
+		4609AD971B7A0F8700265723 /* MMHomePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMHomePageView.m; path = UI/MMHomePageView.m; sourceTree = "<group>"; };
+		4609AD9C1B7A15C400265723 /* MMRankPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMRankPageView.h; path = UI/MMRankPageView.h; sourceTree = "<group>"; };
+		4609AD9D1B7A15C400265723 /* MMRankPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMRankPageView.m; path = UI/MMRankPageView.m; sourceTree = "<group>"; };
+		4609ADA01B7A163700265723 /* MMFMPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMFMPageView.h; path = UI/MMFMPageView.h; sourceTree = "<group>"; };
+		4609ADA11B7A163700265723 /* MMFMPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMFMPageView.m; path = UI/MMFMPageView.m; sourceTree = "<group>"; };
+		4609ADA41B7A167200265723 /* MMGuessPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMGuessPageView.h; path = UI/MMGuessPageView.h; sourceTree = "<group>"; };
+		4609ADA51B7A167200265723 /* MMGuessPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMGuessPageView.m; path = UI/MMGuessPageView.m; sourceTree = "<group>"; };
+		4609ADA81B7A169F00265723 /* MMDevicePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMDevicePageView.h; path = UI/MMDevicePageView.h; sourceTree = "<group>"; };
+		4609ADA91B7A169F00265723 /* MMDevicePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMDevicePageView.m; path = UI/MMDevicePageView.m; sourceTree = "<group>"; };
+		4609ADAD1B7A16DB00265723 /* MMLovePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMLovePageView.h; path = UI/MMLovePageView.h; sourceTree = "<group>"; };
+		4609ADAE1B7A16DB00265723 /* MMLovePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMLovePageView.m; path = UI/MMLovePageView.m; sourceTree = "<group>"; };
+		4609ADB11B7A172100265723 /* MMSongPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMSongPageView.h; path = UI/MMSongPageView.h; sourceTree = "<group>"; };
+		4609ADB21B7A172100265723 /* MMSongPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMSongPageView.m; path = UI/MMSongPageView.m; sourceTree = "<group>"; };
+		4609ADB51B7A177D00265723 /* MMiTunesPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMiTunesPageView.h; path = UI/MMiTunesPageView.h; sourceTree = "<group>"; };
+		4609ADB61B7A177D00265723 /* MMiTunesPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMiTunesPageView.m; path = UI/MMiTunesPageView.m; sourceTree = "<group>"; };
+		4609ADC01B7B748200265723 /* MMRankItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMRankItemCell.h; path = UI/MMRankItemCell.h; sourceTree = "<group>"; };
+		4609ADC11B7B748200265723 /* MMRankItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMRankItemCell.m; path = UI/MMRankItemCell.m; sourceTree = "<group>"; };
+		4609ADC31B7B8ED500265723 /* MMRankDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMRankDelegate.h; path = UI/MMRankDelegate.h; sourceTree = "<group>"; };
+		4609ADC61B7B90C200265723 /* MMSongTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMSongTable.h; path = UI/MMSongTable.h; sourceTree = "<group>"; };
+		4609ADC71B7B90C200265723 /* MMSongTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMSongTable.m; path = UI/MMSongTable.m; sourceTree = "<group>"; };
+		4609ADCC1B7B929600265723 /* MMSongTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMSongTableCellView.h; path = UI/MMSongTableCellView.h; sourceTree = "<group>"; };
+		4609ADCD1B7B929600265723 /* MMSongTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMSongTableCellView.m; path = UI/MMSongTableCellView.m; sourceTree = "<group>"; };
 		46196F251B3C197400230D5E /* MMSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMSearchView.h; path = UI/MMSearchView.h; sourceTree = "<group>"; };
 		46196F261B3C197400230D5E /* MMSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMSearchView.m; path = UI/MMSearchView.m; sourceTree = "<group>"; };
 		4625AEC11B148E69006A7C51 /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainWindowController.h; path = UI/MainWindowController.h; sourceTree = "<group>"; };
 		4625AEC21B148E69006A7C51 /* MainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainWindowController.m; path = UI/MainWindowController.m; sourceTree = "<group>"; };
 		4625AEC31B148E69006A7C51 /* MainWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindowController.xib; path = UI/MainWindowController.xib; sourceTree = "<group>"; };
-		4634BE8E1B45028E00B2E9EB /* MMChannelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMChannelCell.h; path = UI/MMChannelCell.h; sourceTree = "<group>"; };
-		4634BE8F1B45028E00B2E9EB /* MMChannelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMChannelCell.m; path = UI/MMChannelCell.m; sourceTree = "<group>"; };
-		4634BE921B45052C00B2E9EB /* MMChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMChannelView.h; path = UI/MMChannelView.h; sourceTree = "<group>"; };
-		4634BE931B45052C00B2E9EB /* MMChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMChannelView.m; path = UI/MMChannelView.m; sourceTree = "<group>"; };
+		4634BE8E1B45028E00B2E9EB /* MMFMPageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMFMPageViewCell.h; path = UI/MMFMPageViewCell.h; sourceTree = "<group>"; };
+		4634BE8F1B45028E00B2E9EB /* MMFMPageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMFMPageViewCell.m; path = UI/MMFMPageViewCell.m; sourceTree = "<group>"; };
 		4634BE951B45123B00B2E9EB /* MMMusicChannel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MMMusicChannel.h; path = Core/MMMusicChannel.h; sourceTree = "<group>"; };
 		4634BE971B453A1400B2E9EB /* LoginMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginMananger.h; path = Core/LoginMananger.h; sourceTree = "<group>"; };
 		4634BE981B453A1400B2E9EB /* LoginMananger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginMananger.m; path = Core/LoginMananger.m; sourceTree = "<group>"; };
@@ -117,6 +159,10 @@
 		463A22341B3975C1004559A1 /* MMTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMTableView.m; path = UI/MMTableView.m; sourceTree = "<group>"; };
 		463A223A1B397809004559A1 /* MMTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMTableCellView.h; path = UI/MMTableCellView.h; sourceTree = "<group>"; };
 		463A223B1B397809004559A1 /* MMTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMTableCellView.m; path = UI/MMTableCellView.m; sourceTree = "<group>"; };
+		463EAC1B1B83533A0079EA28 /* MMButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MMButton.h; path = UI/MMButton.h; sourceTree = "<group>"; };
+		463EAC1C1B83533A0079EA28 /* MMButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MMButton.m; path = UI/MMButton.m; sourceTree = "<group>"; };
+		463EAC681B84A12A0079EA28 /* NSImage+MMAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSImage+MMAddition.h"; path = "Catagories/NSImage+MMAddition.h"; sourceTree = "<group>"; };
+		463EAC691B84A12A0079EA28 /* NSImage+MMAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSImage+MMAddition.m"; path = "Catagories/NSImage+MMAddition.m"; sourceTree = "<group>"; };
 		4649BC8E1B04C52F002D09F5 /* MyMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4649BC921B04C52F002D09F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4649BC931B04C52F002D09F5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -241,9 +287,114 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4609AD951B7A0F6600265723 /* MMHomePage */ = {
+			isa = PBXGroup;
+			children = (
+				4609AD961B7A0F8700265723 /* MMHomePageView.h */,
+				4609AD971B7A0F8700265723 /* MMHomePageView.m */,
+			);
+			name = MMHomePage;
+			sourceTree = "<group>";
+		};
+		4609AD9B1B7A15A600265723 /* MMRankPage */ = {
+			isa = PBXGroup;
+			children = (
+				4609AD9C1B7A15C400265723 /* MMRankPageView.h */,
+				4609AD9D1B7A15C400265723 /* MMRankPageView.m */,
+				4609ADC01B7B748200265723 /* MMRankItemCell.h */,
+				4609ADC11B7B748200265723 /* MMRankItemCell.m */,
+				4609ADC31B7B8ED500265723 /* MMRankDelegate.h */,
+			);
+			name = MMRankPage;
+			sourceTree = "<group>";
+		};
+		4609AD9F1B7A161E00265723 /* MMFMPage */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADA01B7A163700265723 /* MMFMPageView.h */,
+				4609ADA11B7A163700265723 /* MMFMPageView.m */,
+				4634BE8E1B45028E00B2E9EB /* MMFMPageViewCell.h */,
+				4634BE8F1B45028E00B2E9EB /* MMFMPageViewCell.m */,
+			);
+			name = MMFMPage;
+			sourceTree = "<group>";
+		};
+		4609ADA31B7A165400265723 /* MMGuessPage */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADA41B7A167200265723 /* MMGuessPageView.h */,
+				4609ADA51B7A167200265723 /* MMGuessPageView.m */,
+			);
+			name = MMGuessPage;
+			sourceTree = "<group>";
+		};
+		4609ADA71B7A167B00265723 /* MMDevicePage */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADA81B7A169F00265723 /* MMDevicePageView.h */,
+				4609ADA91B7A169F00265723 /* MMDevicePageView.m */,
+			);
+			name = MMDevicePage;
+			sourceTree = "<group>";
+		};
+		4609ADAB1B7A16B000265723 /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADB41B7A176500265723 /* MMiTunesPage */,
+				4609ADB01B7A16ED00265723 /* MMSongPage */,
+				4609ADAC1B7A16C700265723 /* MMLovePage */,
+				4609ADA71B7A167B00265723 /* MMDevicePage */,
+				4609ADA31B7A165400265723 /* MMGuessPage */,
+				4609AD9F1B7A161E00265723 /* MMFMPage */,
+				4609AD9B1B7A15A600265723 /* MMRankPage */,
+				4609AD951B7A0F6600265723 /* MMHomePage */,
+			);
+			name = Options;
+			sourceTree = "<group>";
+		};
+		4609ADAC1B7A16C700265723 /* MMLovePage */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADAD1B7A16DB00265723 /* MMLovePageView.h */,
+				4609ADAE1B7A16DB00265723 /* MMLovePageView.m */,
+			);
+			name = MMLovePage;
+			sourceTree = "<group>";
+		};
+		4609ADB01B7A16ED00265723 /* MMSongPage */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADB11B7A172100265723 /* MMSongPageView.h */,
+				4609ADB21B7A172100265723 /* MMSongPageView.m */,
+			);
+			name = MMSongPage;
+			sourceTree = "<group>";
+		};
+		4609ADB41B7A176500265723 /* MMiTunesPage */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADB51B7A177D00265723 /* MMiTunesPageView.h */,
+				4609ADB61B7A177D00265723 /* MMiTunesPageView.m */,
+			);
+			name = MMiTunesPage;
+			sourceTree = "<group>";
+		};
+		4609ADC91B7B90C800265723 /* MMSongTable */ = {
+			isa = PBXGroup;
+			children = (
+				4609ADC61B7B90C200265723 /* MMSongTable.h */,
+				4609ADC71B7B90C200265723 /* MMSongTable.m */,
+				4609ADCC1B7B929600265723 /* MMSongTableCellView.h */,
+				4609ADCD1B7B929600265723 /* MMSongTableCellView.m */,
+			);
+			name = MMSongTable;
+			sourceTree = "<group>";
+		};
 		4625AEC61B14946E006A7C51 /* Catagories */ = {
 			isa = PBXGroup;
 			children = (
+				463EAC681B84A12A0079EA28 /* NSImage+MMAddition.h */,
+				463EAC691B84A12A0079EA28 /* NSImage+MMAddition.m */,
 				463A22261B393418004559A1 /* NSImage+RBLResizableImageAdditions.h */,
 				463A22271B393418004559A1 /* NSImage+RBLResizableImageAdditions.m */,
 				463A221F1B392EE4004559A1 /* NSImage+Rotate.h */,
@@ -256,24 +407,6 @@
 				469BC7491B3A63E7006448E5 /* NSString+Encode.m */,
 			);
 			name = Catagories;
-			sourceTree = "<group>";
-		};
-		4634BE8D1B45026F00B2E9EB /* MMChannelCell */ = {
-			isa = PBXGroup;
-			children = (
-				4634BE8E1B45028E00B2E9EB /* MMChannelCell.h */,
-				4634BE8F1B45028E00B2E9EB /* MMChannelCell.m */,
-			);
-			name = MMChannelCell;
-			sourceTree = "<group>";
-		};
-		4634BE911B4504FA00B2E9EB /* MMChannelView */ = {
-			isa = PBXGroup;
-			children = (
-				4634BE921B45052C00B2E9EB /* MMChannelView.h */,
-				4634BE931B45052C00B2E9EB /* MMChannelView.m */,
-			);
-			name = MMChannelView;
 			sourceTree = "<group>";
 		};
 		463A22251B393399004559A1 /* MMSlider */ = {
@@ -301,6 +434,15 @@
 				463A223B1B397809004559A1 /* MMTableCellView.m */,
 			);
 			name = MMTableViewCell;
+			sourceTree = "<group>";
+		};
+		463EAC1A1B8352DA0079EA28 /* MMButton */ = {
+			isa = PBXGroup;
+			children = (
+				463EAC1B1B83533A0079EA28 /* MMButton.h */,
+				463EAC1C1B83533A0079EA28 /* MMButton.m */,
+			);
+			name = MMButton;
 			sourceTree = "<group>";
 		};
 		4649BC851B04C52F002D09F5 = {
@@ -453,6 +595,19 @@
 			name = MMWindowController;
 			sourceTree = "<group>";
 		};
+		4674F8901B78C2BF00C7B0D1 /* MMOptionView */ = {
+			isa = PBXGroup;
+			children = (
+				4609AC581B78E85D00265723 /* MMOptinView.h */,
+				4609AC591B78E85D00265723 /* MMOptinView.m */,
+				4609AC5B1B78EF3A00265723 /* MMOptionCellView.h */,
+				4609AC5C1B78EF3A00265723 /* MMOptionCellView.m */,
+				4609AC5E1B78FA1400265723 /* MMOptionSepratorCellView.h */,
+				4609AC5F1B78FA1400265723 /* MMOptionSepratorCellView.m */,
+			);
+			name = MMOptionView;
+			sourceTree = "<group>";
+		};
 		468E5D4F1B3D1A3500CD6950 /* MMSearch */ = {
 			isa = PBXGroup;
 			children = (
@@ -531,13 +686,21 @@
 		46C0FF441B0586030087D8E7 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				4634BE911B4504FA00B2E9EB /* MMChannelView */,
-				4634BE8D1B45026F00B2E9EB /* MMChannelCell */,
+				463EAC1A1B8352DA0079EA28 /* MMButton */,
+				4609ADC91B7B90C800265723 /* MMSongTable */,
+				4609ADAB1B7A16B000265723 /* Options */,
+				4674F8901B78C2BF00C7B0D1 /* MMOptionView */,
 				468E5D501B3D352A00CD6950 /* MMLyric */,
 				468E5D4F1B3D1A3500CD6950 /* MMSearch */,
 				469BC7541B3AA4B3006448E5 /* MMRotatedImage */,
 				463A22361B3977B1004559A1 /* MMTableViewCell */,
 				463A22321B3975A7004559A1 /* MMTableView */,
+				463A22251B393399004559A1 /* MMSlider */,
+				46736B191B16AFB7005DA9D5 /* MMWindowController */,
+				46736B181B16AFB1005DA9D5 /* MMView */,
+				46C0FF451B05861C0087D8E7 /* MMWindow */,
+				469BC7571B3AB27D006448E5 /* PlayManager.h */,
+				469BC7581B3AB27D006448E5 /* PlayManager.m */,
 				46736B641B172BBA005DA9D5 /* MainMenuController.h */,
 				46736B651B172BBA005DA9D5 /* MainMenuController.m */,
 				4625AEC11B148E69006A7C51 /* MainWindowController.h */,
@@ -546,12 +709,6 @@
 				46C0FF491B0586D80087D8E7 /* LoginViewController.h */,
 				46C0FF4A1B0586D80087D8E7 /* LoginViewController.m */,
 				4634BE9D1B45487500B2E9EB /* Main.storyboard */,
-				463A22251B393399004559A1 /* MMSlider */,
-				46736B191B16AFB7005DA9D5 /* MMWindowController */,
-				46736B181B16AFB1005DA9D5 /* MMView */,
-				46C0FF451B05861C0087D8E7 /* MMWindow */,
-				469BC7571B3AB27D006448E5 /* PlayManager.h */,
-				469BC7581B3AB27D006448E5 /* PlayManager.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -670,17 +827,21 @@
 				4649BCEA1B04C5E8002D09F5 /* DOUAudioSpatialAnalyzer.m in Sources */,
 				4649BCE61B04C5E8002D09F5 /* DOUAudioFrequencyAnalyzer.m in Sources */,
 				465E07071B15B27800F1C6B8 /* MMWindowController.m in Sources */,
+				4609ADB31B7A172100265723 /* MMSongPageView.m in Sources */,
 				468E5C5D1B3CEEB100CD6950 /* MMSearchCellView.m in Sources */,
 				468E5D561B3D36C000CD6950 /* MMLyricTableCellView.m in Sources */,
 				4649BCED1B04C5E8002D09F5 /* DOUAudioVisualizer.m in Sources */,
 				46C000591B060F170087D8E7 /* AFURLResponseSerialization.m in Sources */,
 				4649BCF71B04C669002D09F5 /* MyPlayer.m in Sources */,
+				463EAC6A1B84A12A0079EA28 /* NSImage+MMAddition.m in Sources */,
 				469BC7501B3A8365006448E5 /* MusicCache.m in Sources */,
 				4649BCE01B04C5E8002D09F5 /* DOUAudioAnalyzer.m in Sources */,
 				463A22351B3975C1004559A1 /* MMTableView.m in Sources */,
 				4649BCE51B04C5E8002D09F5 /* DOUAudioFileProvider.m in Sources */,
 				4649BCE71B04C5E8002D09F5 /* DOUAudioLPCM.m in Sources */,
 				463A22311B395929004559A1 /* CAAnimation+MCAdditions.m in Sources */,
+				4609ADA61B7A167200265723 /* MMGuessPageView.m in Sources */,
+				463EAC1D1B83533A0079EA28 /* MMButton.m in Sources */,
 				463A22281B393418004559A1 /* NSImage+RBLResizableImageAdditions.m in Sources */,
 				463A22211B392EE4004559A1 /* NSImage+Rotate.m in Sources */,
 				463A222B1B39345C004559A1 /* RBLResizableImage.m in Sources */,
@@ -688,33 +849,43 @@
 				4625AEC41B148E69006A7C51 /* MainWindowController.m in Sources */,
 				46C000531B060F170087D8E7 /* AFHTTPRequestOperationManager.m in Sources */,
 				4634BE991B453A1400B2E9EB /* LoginMananger.m in Sources */,
+				4609ADA21B7A163700265723 /* MMFMPageView.m in Sources */,
 				4649BCE91B04C5E8002D09F5 /* DOUAudioRenderer.m in Sources */,
+				4609AD9E1B7A15C400265723 /* MMRankPageView.m in Sources */,
 				463A223C1B397809004559A1 /* MMTableCellView.m in Sources */,
-				4634BE901B45028E00B2E9EB /* MMChannelCell.m in Sources */,
+				4634BE901B45028E00B2E9EB /* MMFMPageViewCell.m in Sources */,
 				4649BCE81B04C5E8002D09F5 /* DOUAudioPlaybackItem.m in Sources */,
 				469BC74A1B3A63E7006448E5 /* NSString+Encode.m in Sources */,
 				4649BCEF1B04C5E8002D09F5 /* DOUMPMediaLibraryAssetLoader.m in Sources */,
 				46C0003B1B060E250087D8E7 /* MusicManager.m in Sources */,
-				4634BE941B45052C00B2E9EB /* MMChannelView.m in Sources */,
+				4609AC5A1B78E85D00265723 /* MMOptinView.m in Sources */,
 				463A22241B39338D004559A1 /* MMSlider.m in Sources */,
 				4649BCE21B04C5E8002D09F5 /* DOUAudioDecoder.m in Sources */,
 				4649BCEC1B04C5E8002D09F5 /* DOUAudioStreamer+Options.m in Sources */,
 				46C0005A1B060F170087D8E7 /* AFURLSessionManager.m in Sources */,
 				4649BC971B04C52F002D09F5 /* main.m in Sources */,
+				4609ADC21B7B748200265723 /* MMRankItemCell.m in Sources */,
 				46736B171B16AF36005DA9D5 /* MMView.m in Sources */,
 				46C000561B060F170087D8E7 /* AFSecurityPolicy.m in Sources */,
+				4609AD981B7A0F8700265723 /* MMHomePageView.m in Sources */,
+				4609ADC81B7B90C200265723 /* MMSongTable.m in Sources */,
 				4649BCEB1B04C5E8002D09F5 /* DOUAudioStreamer.m in Sources */,
+				4609ADAA1B7A169F00265723 /* MMDevicePageView.m in Sources */,
 				46736B661B172BBA005DA9D5 /* MainMenuController.m in Sources */,
 				4634BE9C1B453AC300B2E9EB /* MusicDefaults.m in Sources */,
+				4609ADB71B7A177D00265723 /* MMiTunesPageView.m in Sources */,
+				4609ADAF1B7A16DB00265723 /* MMLovePageView.m in Sources */,
 				46C0FF481B05864C0087D8E7 /* MMWindow.m in Sources */,
 				46C000551B060F170087D8E7 /* AFNetworkReachabilityManager.m in Sources */,
 				469BC74D1B3A76BB006448E5 /* MusicInfo.m in Sources */,
 				4649BCE11B04C5E8002D09F5 /* DOUAudioAnalyzer+Default.m in Sources */,
+				4609AC5D1B78EF3A00265723 /* MMOptionCellView.m in Sources */,
 				46C000541B060F170087D8E7 /* AFHTTPSessionManager.m in Sources */,
 				468E5D531B3D354D00CD6950 /* MMLyricView.m in Sources */,
 				469BC7531B3AA4A0006448E5 /* MMRotatedImage.m in Sources */,
 				463A222E1B3958A1004559A1 /* NSView+MCAdditions.m in Sources */,
 				46C000581B060F170087D8E7 /* AFURLRequestSerialization.m in Sources */,
+				4609AC601B78FA1400265723 /* MMOptionSepratorCellView.m in Sources */,
 				4649BCE31B04C5E8002D09F5 /* DOUAudioEventLoop.m in Sources */,
 				4649BCF01B04C5E8002D09F5 /* DOUSimpleHTTPRequest.m in Sources */,
 				46C0FF4B1B0586D80087D8E7 /* LoginViewController.m in Sources */,
@@ -725,6 +896,7 @@
 				4649BCFA1B04C6C0002D09F5 /* MusicFile.m in Sources */,
 				4649BCEE1B04C5E8002D09F5 /* DOUEAGLView.m in Sources */,
 				468E5D591B3D4CAD00CD6950 /* MusicLyricParser.m in Sources */,
+				4609ADCE1B7B929600265723 /* MMSongTableCellView.m in Sources */,
 				4649BC951B04C52F002D09F5 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

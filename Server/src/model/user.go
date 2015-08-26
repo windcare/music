@@ -69,3 +69,22 @@ func (this *accountModel) CheckUserAndPassword(username string, password string)
 	}
 	return 0, false, nil
 }
+
+func (this *accountModel) RandomUser(count int) ([]int, error) {
+	// 首先查询有多少用户
+	if DatabaseInstance().Open() != nil {
+		return nil, errors.New("打开数据库失败")
+	}
+	defer DatabaseInstance().Close()
+	row, err := DatabaseInstance().DB.Query("select count(*) from user")
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	defer row.Close()
+	var userCount int = 0
+	if row.Next() {
+		row.Scan(&userCount)
+	}
+	// 然后从这么多用户中，随便抽出count位用户
+}

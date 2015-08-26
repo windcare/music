@@ -13,6 +13,8 @@
 
 - (void)setClearBackground;
 
+- (void)setWhiteBackground;
+
 - (void)showWindowAndMakeItKeyWindow;
 
 @end

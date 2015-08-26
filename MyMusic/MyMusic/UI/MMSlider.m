@@ -49,6 +49,15 @@
   return self;
 }
 
+- (id)initWithCoder:(NSCoder *)coder {
+    if (self = [super initWithCoder:coder]) {
+        NSActionCell *cell = [[NSActionCell alloc] init];
+        [self setCell:cell];
+        [self drawComponents];
+    }
+    return self;
+}
+
 #pragma mark - Override NSView Methods
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldSize {

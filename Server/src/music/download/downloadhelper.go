@@ -71,7 +71,8 @@ func (this *downloadHelper) downloadNetworkFileToBuffer(url string) ([]byte, err
 	return body, err
 }
 
-func (this *downloadHelper) downloadNetworkFileToNativeFileByHandle(url string, filePath string, handler HandleCallback) error {
+func (this *downloadHelper) downloadNetworkFileToNativeFileByHandle(url string, filePath string,
+	handler HandleCallback) error {
 	out, err := os.Create(filePath)
 	if err != nil {
 		fmt.Println("download create error: ", err)
@@ -139,7 +140,7 @@ func (this *downloadHelper) downloadNetworkFileToNativeFileUsingCallback(url str
 		} else if err != nil || size == 0 {
 			callback(nil, err, &stopDownload)
 			if err != nil {
-				fmt.Println("download Error: ", err)
+				fmt.Println("downloadNetworkFileToNativeFileUsingCallback Error: ", err)
 				hasError = true
 			}
 			break
@@ -186,7 +187,7 @@ func (this *downloadHelper) downloadNetworkFileToBufferUsingCallback(url string,
 		} else if err != nil || size == 0 {
 			callback(nil, err, &stopDownload)
 			if err != nil {
-				fmt.Println("download Error: ", err)
+				fmt.Println("downloadNetworkFileToBufferUsingCallback Error: ", err)
 				hasError = true
 			}
 			break

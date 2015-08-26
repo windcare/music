@@ -11,7 +11,7 @@
 #import "MusicInfo.h"
 #import "MusicCache.h"
 
-//#define LOCAL_SERVER
+#define LOCAL_SERVER
 
 #ifdef LOCAL_SERVER
 static NSString * kHost = @"localhost:34321";
@@ -107,9 +107,24 @@ static NSString * kDownloadURLBase = @"http://120.26.38.153:3432/message";
     [[[self class] sharedRequestOperationQueue] addOperation:requestOperation];
 }
 
-- (void)fetchRandomListWithChannel:(MMMusicChannel)channel 
+- (void)fetchRankListWithType:(MMMusicRankType)type 
+                     complete:(void (^)(int, NSArray *))completion {
+  [self fetchRandomListWithChannel:type musicType:2 complete:^(int errorCode, NSArray *musicList) {
+    completion(errorCode, musicList);
+  }];
+}
+
+- (void)fetchFmListWithChannel:(MMMusicChannel)channel 
+                      complete:(void (^)(int, NSArray *))completion {
+  [self fetchRandomListWithChannel:channel musicType:1 complete:^(int errorCode, NSArray *musicList) {
+    completion(errorCode, musicList);
+  }];
+}
+
+- (void)fetchRandomListWithChannel:(NSInteger)channel 
+                         musicType:(NSInteger)type
                           complete:(void (^)(int, NSArray *))completion {
-    NSString *url = [NSString stringWithFormat:@"?action=fetchRandomList&channel=%ld", channel];
+    NSString *url = [NSString stringWithFormat:@"?action=fetchRandomList&channel=%ld&type=%ld", channel, type];
     NSURL *fetchRadomListURL = [NSURL URLWithString:[kAPIURLBase stringByAppendingString:url]];
     
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:fetchRadomListURL];

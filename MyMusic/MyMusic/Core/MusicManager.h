@@ -19,8 +19,11 @@ typedef enum : NSInteger {
 
 + (instancetype) sharedManager;
 
-- (void)fetchRandomListWithChannel:(MMMusicChannel) channel 
-                          complete:(void (^)(int errorCode, NSArray *musicList))completion;
+- (void)fetchRankListWithType:(MMMusicRankType)type 
+                     complete:(void (^)(int errorCode, NSArray *musicList))completion;
+
+- (void)fetchFmListWithChannel:(MMMusicChannel) channel 
+                      complete:(void (^)(int errorCode, NSArray *musicList))completion;
 
 - (void)fetchLoveMusicListWithCompletion:(void (^)(int errorCode, NSArray *musicList))completion;
 

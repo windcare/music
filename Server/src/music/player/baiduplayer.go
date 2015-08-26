@@ -163,7 +163,6 @@ func (this *baiduMusicPlayer) FetchMusicList(musicType int) []*element.MusicInfo
 	musicList := make(map[string]*element.MusicInfo)
 	this.fetchMusicInfoList(musicIdList, &musicList)
 	this.fetchMusicLinkList(musicIdList, &musicList)
-
 	var retMusicList []*element.MusicInfo = nil
 	for _, music := range musicList {
 		if this.checkMusicIsValid(music) {
@@ -174,16 +173,28 @@ func (this *baiduMusicPlayer) FetchMusicList(musicType int) []*element.MusicInfo
 }
 
 func (this *baiduMusicPlayer) FetchMusicById(musicId int) *element.MusicInfo {
+	fmt.Println("baiduMusicPlayer FetchMusicById:", musicId)
 	musicIdList := []string{strconv.Itoa(musicId)}
 	musicList := make(map[string]*element.MusicInfo)
 	this.fetchMusicInfoList(musicIdList, &musicList)
 	this.fetchMusicLinkList(musicIdList, &musicList)
-
 	var retMusicList []*element.MusicInfo = nil
 	for _, music := range musicList {
 		retMusicList = append(retMusicList, music)
 	}
-	return retMusicList[0]
+	if len(retMusicList) > 0 {
+		return retMusicList[0]
+	}
+	return nil
+}
+
+func (this *baiduMusicPlayer) FetchMusicLinkInfoById(musicInfo *element.MusicInfo) {
+	musicId := musicInfo.NetMusicId
+	fmt.Println("baiduMusicPlayer FetchMusicLinkeInfoById:", musicId)
+	musicIdList := []string{strconv.Itoa(musicId)}
+	musicList := make(map[string]*element.MusicInfo)
+	musicList[strconv.Itoa(musicId)] = musicInfo
+	this.fetchMusicLinkList(musicIdList, &musicList)
 }
 
 func (this *baiduMusicPlayer) SearchMusic(keyword string) ([]*element.MusicInfo, error) {
@@ -249,6 +260,7 @@ func (this *baiduMusicPlayer) fetchMusicInfoList(musicIdList []string, musicList
 		fmt.Println("FetchMusicInfoList Read Error: ", err)
 		return
 	}
+	fmt.Println(string(body))
 	js, err := simplejson.NewJson(body)
 	if err != nil {
 		fmt.Println("FetchMusicInfoList parser json Error: ", err)
@@ -281,6 +293,7 @@ func (this *baiduMusicPlayer) parserMusicInfoList(js *simplejson.Json, musicList
 }
 
 func (this *baiduMusicPlayer) fetchMusicLinkList(musicIdList []string, musicList *map[string]*element.MusicInfo) {
+	fmt.Printf("idList:", musicIdList)
 	resp, err := http.PostForm(baiduMusicLinkURLBase, url.Values{"songIds": {strings.Join(musicIdList, ",")}, "type": {"mp3"}})
 	if err != nil {
 		fmt.Println("FetchMusicLink Error: ", err)
@@ -295,6 +308,7 @@ func (this *baiduMusicPlayer) fetchMusicLinkList(musicIdList []string, musicList
 	}
 	js, err := simplejson.NewJson(body)
 	if err != nil {
+		fmt.Println(string(body))
 		fmt.Println("FetchMusicInfoList parser json Error: ", err)
 		return
 	}

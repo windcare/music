@@ -33,6 +33,8 @@ func (this *MessageController) writeStream(musicId int, function downloadFunc, w
 	}, func(content []byte, err error, stop *bool) {
 		if err != nil {
 			fmt.Println("download error: ", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.(http.Flusher).Flush()
 		} else {
 			if size, err := w.Write(content); err != nil || size == 0 {
 				*stop = true
@@ -40,6 +42,7 @@ func (this *MessageController) writeStream(musicId int, function downloadFunc, w
 			w.(http.Flusher).Flush()
 		}
 	})
+	fmt.Println("writeStream complete")
 }
 
 func (this *MessageController) handleGetRequest(w http.ResponseWriter, r *http.Request) {

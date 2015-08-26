@@ -62,17 +62,18 @@ func (this *qqMusicDownloader) downloadURLWithHandle(url string) {
 }
 
 func (this *qqMusicDownloader) DownloadLyric() {
-	lyricPath := this.info.DownloadPath + "/lyric.lrc"
+	lyricPath := this.info.DownloadPath
 	this.downloadURL(lyricPath)
 }
 
 func (this *qqMusicDownloader) DownloadBigCover() {
-	coverPath := this.info.DownloadPath + "/big_cover.jpg"
+	coverPath := this.info.DownloadPath
+	fmt.Println("download Big Cover Image: ", coverPath)
 	this.downloadURL(coverPath)
 }
 
 func (this *qqMusicDownloader) DownloadSmallCover() {
-	coverPath := this.info.DownloadPath + "/small_cover.jpg"
+	coverPath := this.info.DownloadPath
 	this.downloadURL(coverPath)
 }
 

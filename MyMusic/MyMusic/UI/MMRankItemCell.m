@@ -1,18 +1,19 @@
 //
-//  MMChannelCell.m
+//  MMRankItemCell.m
 //  MyMusic
 //
 //  Created by sjjwind on 7/2/15.
 //  Copyright (c) 2015 sjjwind. All rights reserved.
 //
 
-#import "MMChannelCell.h"
+#import "MMRankItemCell.h"
 #import <Foundation/Foundation.h>
 
 const static NSInteger kPlayImageWidth = 40;
 
-@interface MMChannelCell()
+@interface MMRankItemCell()
 
+@property (nonatomic, assign) MMMusicRankType musicRankType;
 @property (nonatomic, strong) NSImageView *imageView;
 @property (nonatomic, strong) NSTextField *nameView;
 @property (nonatomic, strong) NSView *backgroundView;
@@ -21,26 +22,26 @@ const static NSInteger kPlayImageWidth = 40;
 
 @end
 
-@implementation MMChannelCell
+@implementation MMRankItemCell
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
+    NSInteger imageHeight = frameRect.size.width;
+    NSInteger textHeight = frameRect.size.height - frameRect.size.width;
     if (self = [super initWithFrame:frameRect]) {        
-        self.backgroundView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, self.frame.size.width, self.frame.size.height)];
-        
-        self.nameView = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, self.frame.size.width, 22)];
+        self.nameView = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, self.frame.size.width, 33)];
         self.nameView.bezeled = NO;
         self.nameView.drawsBackground = NO;
         self.nameView.editable = NO;
         self.nameView.selectable = NO;
         self.nameView.alignment = NSCenterTextAlignment;
-        self.nameView.textColor = [NSColor whiteColor];
+        self.nameView.textColor = [NSColor blackColor];
+        self.nameView.font = [NSFont fontWithName:@"MicrosoftYaHei" size:13.0f];
         
         [self addSubview:self.backgroundView];
         [self addSubview:self.nameView];
         
-        [self.backgroundView setWantsLayer:YES];
-        self.backgroundView.layer.backgroundColor = [[NSColor whiteColor] CGColor];
-        self.backgroundView.layer.opacity = 0.1;
+        self.imageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, textHeight, imageHeight, imageHeight)];
+        [self addSubview:self.imageView];
         
         NSRect trackRect = NSMakeRect(0, 0, self.frame.size.width, self.frame.size.height);
         NSTrackingArea *area = [[NSTrackingArea alloc]initWithRect:trackRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:nil];
@@ -50,34 +51,16 @@ const static NSInteger kPlayImageWidth = 40;
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    self.backgroundView.layer.opacity = 0.2;
+//    self.backgroundView.layer.opacity = 0.2;
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    self.backgroundView.layer.opacity = 0.1;
+//    self.backgroundView.layer.opacity = 0.1;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if (self.delegate) {
-        [self.delegate onClick:self];
-    }
-}
-
-- (void)showPlayImage:(BOOL)show {
-    if (self.playImageView == nil) {
-        NSInteger imageWidth = self.frame.size.width;
-        
-        NSRect playImageRect = { (imageWidth - kPlayImageWidth) / 2, self.frame.size.height - self.frame.size.width + (imageWidth - kPlayImageWidth) / 2, kPlayImageWidth, kPlayImageWidth };
-        self.playImageView = [[NSImageView alloc] initWithFrame:playImageRect];
-        [self.playImageView setImage:[NSImage imageNamed:@"btn_channel_play"]];
-        [self.playImageView setHidden:YES];
-        [self addSubview:self.playImageView];
-    }
-    
-    if (show) {
-        [self.playImageView setHidden:NO];
-    } else {
-        [self.playImageView setHidden:YES];
+        [self.delegate onClickItem:self];
     }
 }
 
@@ -87,6 +70,14 @@ const static NSInteger kPlayImageWidth = 40;
 
 - (void)setCellName:(NSString *)cellName {
     self.nameView.stringValue = cellName;
+}
+
+- (void)setMusicType:(MMMusicRankType)rankType {
+  self.musicRankType = rankType;
+}
+
+- (MMMusicRankType)getMusicType {
+  return self.musicRankType;
 }
 
 @end

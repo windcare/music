@@ -1,6 +1,7 @@
 package music
 
 import (
+	"element"
 	"fmt"
 	"music/download"
 	"sync"
@@ -93,7 +94,7 @@ func (this *downloadManager) StartDownload() {
 					this.downloadMutex.Unlock()
 					go func(downloadInfo *download.DownloadInfo, this *downloadManager) {
 						var downloadInterface download.Downloader = nil
-						if downloadInfo.MusicInfo.SourceType == 1 {
+						if downloadInfo.MusicInfo.SourceType == element.BaiduMusicSourceType {
 							downloadInterface = download.NewMusicDownloader(downloadInfo)
 						} else {
 							downloadInterface = download.NewQQMusicDownloader(downloadInfo)

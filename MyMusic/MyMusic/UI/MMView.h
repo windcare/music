@@ -12,4 +12,6 @@
 
 - (void)setBackgroundImage:(NSImage *)image;
 
+- (void)setBackgroundColor:(NSColor *)color;
+
 @end

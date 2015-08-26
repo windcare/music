@@ -1,8 +1,8 @@
 //
-//  MMChannelView.h
+//  MMFMPageView.h
 //  MyMusic
 //
-//  Created by sjjwind on 7/2/15.
+//  Created by sjjwind on 8/11/15.
 //  Copyright (c) 2015 sjjwind. All rights reserved.
 //
 
@@ -11,9 +11,9 @@
 #import "MMMusicChannel.h"
 #import "MainWindowController.h"
 
-
-@interface MMChannelView : MMView
+@interface MMFMPageView : MMView
 
 @property (nonatomic, weak) MainWindowController *controller;
 - (MMMusicChannel)getCurrentChannel;
+
 @end

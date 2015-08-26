@@ -9,20 +9,20 @@
 #import <Cocoa/Cocoa.h>
 #import "MMMusicChannel.h"
 
-@protocol MMChannelCellDelegate;
-@interface MMChannelCell : NSControl
+@protocol MMFMPageViewCellDelegate;
+@interface MMFMPageViewCell : NSControl
 
 @property (nonatomic, assign) MMMusicChannel channelId;
 
-@property (nonatomic, strong) id<MMChannelCellDelegate> delegate;
+@property (nonatomic, strong) id<MMFMPageViewCellDelegate> delegate;
 
 - (void)setCellImage:(NSString *)imageName;
 - (void)setCellName:(NSString *)cellName;
 
 @end
 
-@protocol MMChannelCellDelegate <NSObject>
+@protocol MMFMPageViewCellDelegate <NSObject>
 
-- (void)onClick:(MMChannelCell *)cell;
+- (void)onClick:(MMFMPageViewCell *)cell;
 
 @end

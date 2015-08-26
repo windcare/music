@@ -14,7 +14,28 @@ import (
 	"time"
 )
 
-const rankListBaseURL = "http://music.qq.com/musicmac/toplist/index/top_7.js?_=%d"
+const (
+	RankTypePopulation = "top_7"
+	RankTypeInner      = "top_2"
+	RankTypeHK         = "top_1"
+	RankTypeEurope     = "top_6"
+	RankTypeKorea      = "top_9"
+	RankTypeJapan      = "top_10"
+	RankTypeNational   = "top_11"
+	RankTypeRock       = "top_12"
+	RankTypeChinaTop   = "global_14"
+	RankTypeiTunes     = "global_12"
+	RankTypeHKBusiness = "global_13"
+	RankTypeBillboard  = "global_7"
+	RankTypeUK         = "global_6"
+	RankTypeChannelV   = "global_2"
+	RankTypeHKNew      = "global_3"
+	RankTypeDarkDisk   = "global_9"
+	RankTypeJapanPub   = "global_4"
+	RankTypeKTV        = "global_1"
+)
+
+const rankListBaseURL = "http://music.qq.com/musicmac/toplist/index/%s.js?_=%d"
 const musicBaseURL = "http://stream1%d.qqmusic.qq.com/%d.mp3"
 const lyricBaseURL = "http://music.qq.com/miniportal/static/lyric/%d/%d.xml"
 const smallCoverIamgeBaseURL = "http://imgcache.qq.com/music/photo/album/%d/180_albumpic_%d_0.jpg"
@@ -36,6 +57,8 @@ type qqMusicPlayer struct {
 var qqPlayer *qqMusicPlayer = nil
 var qqMusicPlayerOnce sync.Once
 
+var rankType []string = []string{RankTypePopulation, RankTypeHK, RankTypeEurope, RankTypeKorea, RankTypeJapan, RankTypeNational, RankTypeRock, RankTypeChinaTop, RankTypeiTunes, RankTypeHKBusiness, RankTypeBillboard, RankTypeUK, RankTypeChannelV, RankTypeHKNew, RankTypeDarkDisk, RankTypeJapanPub, RankTypeKTV}
+
 func QQMusicPlayerInstance() *qqMusicPlayer {
 	qqMusicPlayerOnce.Do(func() {
 		qqPlayer = &qqMusicPlayer{}
@@ -52,7 +75,13 @@ func (this *qqMusicPlayer) fetchMusicURLWithMusicId() {
 }
 
 func (this *qqMusicPlayer) FetchMusicList(channel int) []*element.MusicInfo {
-	resp, err := http.Get(fmt.Sprintf(rankListBaseURL, time.Now().Unix()))
+	fmt.Println("channel = ", channel)
+	if len(rankType) <= channel || channel < 0 {
+		return nil
+	}
+	url := fmt.Sprintf(rankListBaseURL, rankType[channel], time.Now().Unix())
+	fmt.Println("url = ", url)
+	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("QQMusic FetchMusicList Error: ", err)
 		return nil
@@ -70,6 +99,25 @@ func (this *qqMusicPlayer) FetchMusicList(channel int) []*element.MusicInfo {
 		}
 	}
 	return musicList
+}
+
+func (this *qqMusicPlayer) FetchMusicById(musicId int) *element.MusicInfo {
+	return nil
+}
+
+func (this *qqMusicPlayer) FetchMusicLinkInfoById(musicInfo *element.MusicInfo) {
+	index := strings.Index(musicInfo.MusicPath, "|")
+	fmt.Println("path = ", musicInfo.MusicPath)
+	fmt.Println("index = ", index)
+	if index != -1 {
+		musicInfo.MusicPath = musicInfo.MusicPath[index+1 : len(musicInfo.MusicPath)]
+		fmt.Println("path = ", musicInfo.MusicPath)
+		musicInfo.MusicPath = fmt.Sprintf(cdnMusicBaseURL, musicInfo.MusicPath, this.fetchKey(), this.fetchId())
+	}
+}
+
+func (this *qqMusicPlayer) FetchNormalMusicLinkInfoById(musicInfo *element.MusicInfo) {
+
 }
 
 func (this *qqMusicPlayer) fetchId() int64 {
@@ -132,17 +180,17 @@ func (this *qqMusicPlayer) parseString(info string) *element.MusicInfo {
 		info.MusicPath = fmt.Sprintf(musicBaseURL, stream, info.NetMusicId)
 		info.SmallCoverImagePath = fmt.Sprintf(smallCoverIamgeBaseURL, albumId%100, albumId)
 		info.BigCoverImagePath = fmt.Sprintf(bigCoverIamgeBaseURL, albumId%100, albumId)
+		fmt.Println("big cover: ", info.BigCoverImagePath)
 		info.LyricPath = fmt.Sprintf(lyricBaseURL, info.NetMusicId%100, info.NetMusicId-3E7)
 		info.SourceType = element.QQMusicSourceType
 		if len(arr) >= 20 {
-			info.MusicPath = fmt.Sprintf(cdnMusicBaseURL, arr[20], this.fetchKey(), this.fetchId())
+			// 保存mid
+			if len(arr[20]) > 1 {
+				info.MusicPath = info.MusicPath + "|" + arr[20]
+			}
 		}
 		return info
 	}
-	return nil
-}
-
-func (this *qqMusicPlayer) FetchMusicById(musicId int) *element.MusicInfo {
 	return nil
 }
 

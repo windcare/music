@@ -38,20 +38,22 @@
             MusicLyricParser *parser = [[MusicLyricParser alloc] init];
             [parser parserFromFile:path];
             self.lyric = [parser getLyrics];
-            if (self.lyric.hasLyric) {
-                [self.informationField setHidden:YES];
-            } else {
-                [self.informationField setHidden:NO];
-            }
-            self.currentIndex = 0;
-            [self.lyricView reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.lyric.hasLyric) {
+                    [self.informationField setHidden:YES];
+                } else {
+                    [self.informationField setHidden:NO];
+                }
+                self.currentIndex = 0;
+                [self.lyricView reloadData];
+            });
         }
         else {
             if (errorCode < 0 && self.retryCount < 3) {
                 self.retryCount++;
                 NSLog(@"拉取歌曲，网络错误");
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSelector:@selector(startPlayLyric:) withObject:music afterDelay:3];
+                    [self performSelector:@selector(startPlayLyric:) withObject:music afterDelay:1];
                 });
             } else {
                 [self.informationField setHidden:YES];
@@ -66,20 +68,22 @@
 }
 
 - (void)setProgress:(NSTimeInterval)progress {
-    if (self.lyric.hasLyric && !self.lyric.isStaticLyric) {
-        NSInteger nowIndex = 0;
-        while (nowIndex + 1 < self.lyric.lyrics.count) {
-            LyricElement *lyric = self.lyric.lyrics[nowIndex+ 1];
-            NSTimeInterval nextTime = lyric.currentTime;
-            if (progress < nextTime) {
-                if (nowIndex != self.currentIndex) {
-                    [self scrollToIndex:nowIndex];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.lyric.hasLyric && !self.lyric.isStaticLyric) {
+            NSInteger nowIndex = 0;
+            while (nowIndex + 1 < self.lyric.lyrics.count) {
+                LyricElement *lyric = self.lyric.lyrics[nowIndex+ 1];
+                NSTimeInterval nextTime = lyric.currentTime;
+                if (progress < nextTime) {
+                    if (nowIndex != self.currentIndex) {
+                        [self scrollToIndex:nowIndex];
+                    }
+                    break;
                 }
-                break;
+                nowIndex++;
             }
-            nowIndex++;
         }
-    }
+    });
 }
 
 - (void)scrollToIndex:(NSInteger)index {

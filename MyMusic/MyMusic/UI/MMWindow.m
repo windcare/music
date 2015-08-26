@@ -31,6 +31,11 @@
     [self setBackgroundColor:[NSColor clearColor]];
 }
 
+- (void)setWhiteBackground {
+    [self setOpaque:NO];
+    [self setBackgroundColor:[NSColor whiteColor]];
+}
+
 - (void)showWindowAndMakeItKeyWindow {
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     [self makeKeyAndOrderFront:nil];
